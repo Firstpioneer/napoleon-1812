@@ -1,74 +1,170 @@
 // 1812 Napoleon's Russian Campaign - Complete Data Store
+// 基于 stdlib-js/datasets-minard-napoleons-march 和 Wikipedia 数据
 
-// 行军路线数据 - 基于Minard原图
+// ============================================================
+// Minard 原始数据 - 完整的48个点，包含3个division
+// Division 1: 主力军团 (拿破仑直接指挥)
+// Division 2: 第二纵队 (乌迪诺/圣西尔军团，北翼)
+// Division 3: 第三纵队 (小分队)
+// ============================================================
+
+// Minard原始军队数据 - 完整版
+export const minardArmyData = [
+    // Division 1 - 主力军团进攻
+    { lon: 24.0, lat: 54.9, size: 340000, direction: 'A', division: 1 },
+    { lon: 24.5, lat: 55.0, size: 340000, direction: 'A', division: 1 },
+    { lon: 25.5, lat: 54.5, size: 340000, direction: 'A', division: 1 },
+    { lon: 26.0, lat: 54.7, size: 320000, direction: 'A', division: 1 },
+    { lon: 27.0, lat: 54.8, size: 300000, direction: 'A', division: 1 },
+    { lon: 28.0, lat: 54.9, size: 280000, direction: 'A', division: 1 },
+    { lon: 28.5, lat: 55.0, size: 240000, direction: 'A', division: 1 },
+    { lon: 29.0, lat: 55.1, size: 210000, direction: 'A', division: 1 },
+    { lon: 30.0, lat: 55.2, size: 180000, direction: 'A', division: 1 },
+    { lon: 30.3, lat: 55.3, size: 175000, direction: 'A', division: 1 },
+    { lon: 32.0, lat: 54.8, size: 145000, direction: 'A', division: 1 },
+    { lon: 33.2, lat: 54.9, size: 140000, direction: 'A', division: 1 },
+    { lon: 34.4, lat: 55.5, size: 127100, direction: 'A', division: 1 },
+    { lon: 35.5, lat: 55.4, size: 100000, direction: 'A', division: 1 },
+    { lon: 36.0, lat: 55.5, size: 100000, direction: 'A', division: 1 },
+    // Division 1 - 主力军团撤退
+    { lon: 37.6, lat: 55.8, size: 100000, direction: 'R', division: 1 },
+    { lon: 37.5, lat: 55.7, size: 98000, direction: 'R', division: 1 },
+    { lon: 37.0, lat: 55.0, size: 97000, direction: 'R', division: 1 },
+    { lon: 36.8, lat: 55.0, size: 96000, direction: 'R', division: 1 },
+    { lon: 35.4, lat: 55.3, size: 87000, direction: 'R', division: 1 },
+    { lon: 34.3, lat: 55.2, size: 55000, direction: 'R', division: 1 },
+    { lon: 33.3, lat: 54.8, size: 37000, direction: 'R', division: 1 },
+    { lon: 32.0, lat: 54.6, size: 24000, direction: 'R', division: 1 },
+    { lon: 30.4, lat: 54.4, size: 20000, direction: 'R', division: 1 },
+    { lon: 29.2, lat: 54.4, size: 20000, direction: 'R', division: 1 },
+    { lon: 28.5, lat: 54.3, size: 20000, direction: 'R', division: 1 },
+    { lon: 28.3, lat: 54.4, size: 20000, direction: 'R', division: 1 },
+    // Division 2 - 北翼军团
+    { lon: 24.0, lat: 55.1, size: 60000, direction: 'A', division: 2 },
+    { lon: 24.5, lat: 55.2, size: 60000, direction: 'A', division: 2 },
+    { lon: 25.5, lat: 54.7, size: 60000, direction: 'A', division: 2 },
+    { lon: 26.6, lat: 55.7, size: 40000, direction: 'A', division: 2 },
+    { lon: 27.4, lat: 55.6, size: 33000, direction: 'A', division: 2 },
+    { lon: 28.7, lat: 55.5, size: 33000, direction: 'R', division: 2 },
+    { lon: 29.2, lat: 54.3, size: 30000, direction: 'R', division: 2 },
+    { lon: 28.5, lat: 54.2, size: 30000, direction: 'R', division: 2 },
+    { lon: 28.3, lat: 54.3, size: 28000, direction: 'R', division: 2 },
+    { lon: 27.5, lat: 54.5, size: 20000, direction: 'R', division: 2 },
+    { lon: 26.8, lat: 54.3, size: 12000, direction: 'R', division: 2 },
+    { lon: 26.4, lat: 54.4, size: 14000, direction: 'R', division: 2 },
+    { lon: 24.6, lat: 54.5, size: 8000, direction: 'R', division: 2 },
+    { lon: 24.4, lat: 54.4, size: 4000, direction: 'R', division: 2 },
+    { lon: 24.2, lat: 54.4, size: 4000, direction: 'R', division: 2 },
+    { lon: 24.1, lat: 54.3, size: 4000, direction: 'R', division: 2 },
+    // Division 3 - 小分队
+    { lon: 24.0, lat: 55.2, size: 22000, direction: 'A', division: 3 },
+    { lon: 24.5, lat: 55.3, size: 22000, direction: 'A', division: 3 },
+    { lon: 24.6, lat: 55.8, size: 6000, direction: 'R', division: 3 },
+    { lon: 24.2, lat: 54.4, size: 6000, direction: 'R', division: 3 },
+    { lon: 24.1, lat: 54.3, size: 6000, direction: 'R', division: 3 }
+]
+
+// 为兼容现有代码，保留原有格式的进攻/撤退数据
+// 使用Minard数据中的Division 1，并添加日期估算
 export const napoleonAdvance = [
-    { lon: 24.0, lat: 54.9, survivors: 422000, date: '1812-06-24', city: '科夫诺' },
-    { lon: 24.5, lat: 55.0, survivors: 400000, date: '1812-06-28', city: null },
-    { lon: 25.3, lat: 54.7, survivors: 400000, date: '1812-06-28', city: '维尔纽斯' },
-    { lon: 26.0, lat: 54.7, survivors: 380000, date: '1812-07-08', city: null },
-    { lon: 27.0, lat: 54.8, survivors: 340000, date: '1812-07-15', city: null },
-    { lon: 28.0, lat: 54.9, survivors: 320000, date: '1812-07-20', city: null },
+    { lon: 24.0, lat: 54.9, survivors: 422000, date: '1812-06-24', city: '科夫诺', event: 'start' },
+    { lon: 24.5, lat: 55.0, survivors: 400000, date: '1812-06-26', city: null },
+    { lon: 25.3, lat: 54.7, survivors: 396000, date: '1812-06-27', city: null },
+    { lon: 25.5, lat: 54.5, survivors: 392000, date: '1812-06-28', city: '维尔纽斯', event: 'city' },
+    { lon: 26.0, lat: 54.7, survivors: 375000, date: '1812-07-08', city: null },
+    { lon: 26.5, lat: 54.75, survivors: 362000, date: '1812-07-12', city: null },
+    { lon: 27.0, lat: 54.8, survivors: 350000, date: '1812-07-15', city: null },
+    { lon: 27.5, lat: 54.85, survivors: 340000, date: '1812-07-18', city: null },
+    { lon: 28.0, lat: 54.9, survivors: 330000, date: '1812-07-20', city: null },
     { lon: 28.5, lat: 55.0, survivors: 300000, date: '1812-07-25', city: null },
-    { lon: 30.2, lat: 55.2, survivors: 280000, date: '1812-07-28', city: '维捷布斯克' },
-    { lon: 30.5, lat: 55.3, survivors: 260000, date: '1812-08-05', city: null },
-    { lon: 31.0, lat: 55.2, survivors: 240000, date: '1812-08-10', city: null },
-    { lon: 32.0, lat: 54.8, survivors: 210000, date: '1812-08-16', city: '斯摩棱斯克' },
-    { lon: 33.0, lat: 55.0, survivors: 195000, date: '1812-08-25', city: null },
-    { lon: 34.0, lat: 55.2, survivors: 180000, date: '1812-09-01', city: null },
-    { lon: 35.0, lat: 55.3, survivors: 165000, date: '1812-09-05', city: null },
-    { lon: 35.8, lat: 55.5, survivors: 145000, date: '1812-09-07', city: '博罗季诺' },
-    { lon: 36.5, lat: 55.6, survivors: 120000, date: '1812-09-10', city: null },
-    { lon: 37.6, lat: 55.75, survivors: 95000, date: '1812-09-14', city: '莫斯科' }
+    { lon: 29.0, lat: 55.1, survivors: 265000, date: '1812-07-26', city: '奥斯特罗夫诺', event: 'battle' },
+    { lon: 29.5, lat: 55.15, survivors: 250000, date: '1812-07-27', city: null },
+    { lon: 30.0, lat: 55.2, survivors: 235000, date: '1812-07-28', city: '维捷布斯克', event: 'city' },
+    { lon: 30.3, lat: 55.3, survivors: 220000, date: '1812-08-05', city: null },
+    { lon: 31.0, lat: 55.1, survivors: 200000, date: '1812-08-10', city: null },
+    { lon: 32.0, lat: 54.8, survivors: 185000, date: '1812-08-17', city: '斯摩棱斯克', event: 'battle' },
+    { lon: 32.6, lat: 54.85, survivors: 180000, date: '1812-08-18', city: null },
+    { lon: 33.2, lat: 54.9, survivors: 175000, date: '1812-08-19', city: '瓦卢蒂诺', event: 'battle' },
+    { lon: 33.8, lat: 55.2, survivors: 168000, date: '1812-08-25', city: null },
+    { lon: 34.4, lat: 55.5, survivors: 160000, date: '1812-09-01', city: '维亚济马' },
+    { lon: 35.0, lat: 55.45, survivors: 145000, date: '1812-09-03', city: null },
+    { lon: 35.5, lat: 55.4, survivors: 134000, date: '1812-09-05', city: '舍瓦尔季诺', event: 'battle' },
+    { lon: 35.8, lat: 55.5, survivors: 130000, date: '1812-09-07', city: '博罗季诺', event: 'battle' },
+    { lon: 36.0, lat: 55.5, survivors: 108000, date: '1812-09-10', city: '莫扎伊斯克' },
+    { lon: 36.8, lat: 55.65, survivors: 104000, date: '1812-09-12', city: null },
+    { lon: 37.6, lat: 55.8, survivors: 100000, date: '1812-09-14', city: '莫斯科', event: 'city' }
 ]
 
 export const napoleonRetreat = [
-    { lon: 37.6, lat: 55.75, survivors: 95000, date: '1812-10-19', city: '莫斯科' },
-    { lon: 36.6, lat: 55.5, survivors: 90000, date: '1812-10-22', city: null },
-    { lon: 36.0, lat: 55.3, survivors: 87000, date: '1812-10-24', city: '小雅罗斯拉夫韦茨' },
-    { lon: 35.0, lat: 55.1, survivors: 80000, date: '1812-10-28', city: null },
-    { lon: 34.4, lat: 55.2, survivors: 75000, date: '1812-11-01', city: '维亚济马' },
-    { lon: 33.2, lat: 55.0, survivors: 65000, date: '1812-11-06', city: null },
-    { lon: 32.0, lat: 54.8, survivors: 50000, date: '1812-11-09', city: '斯摩棱斯克' },
-    { lon: 31.0, lat: 54.6, survivors: 40000, date: '1812-11-15', city: '克拉斯诺耶' },
-    { lon: 30.0, lat: 54.5, survivors: 35000, date: '1812-11-18', city: null },
-    { lon: 29.2, lat: 54.4, survivors: 32000, date: '1812-11-22', city: '奥尔沙' },
-    { lon: 28.5, lat: 54.3, survivors: 28000, date: '1812-11-26', city: '别列津纳' },
-    { lon: 27.5, lat: 54.4, survivors: 20000, date: '1812-11-30', city: null },
-    { lon: 26.8, lat: 54.5, survivors: 15000, date: '1812-12-03', city: '斯莫尔贡' },
-    { lon: 26.0, lat: 54.6, survivors: 12000, date: '1812-12-06', city: '莫洛杰奇诺' },
-    { lon: 25.3, lat: 54.7, survivors: 10000, date: '1812-12-09', city: '维尔纽斯' },
-    { lon: 24.0, lat: 54.9, survivors: 10000, date: '1812-12-14', city: '科夫诺' }
+    { lon: 37.6, lat: 55.8, survivors: 100000, date: '1812-10-19', city: '莫斯科', event: 'retreat_start' },
+    { lon: 37.5, lat: 55.7, survivors: 98000, date: '1812-10-20', city: null },
+    { lon: 37.2, lat: 55.4, survivors: 97500, date: '1812-10-21', city: null },
+    { lon: 37.0, lat: 55.0, survivors: 97000, date: '1812-10-22', city: null },
+    { lon: 36.8, lat: 55.0, survivors: 96000, date: '1812-10-23', city: null },
+    { lon: 36.5, lat: 55.0, survivors: 90000, date: '1812-10-24', city: '小雅罗斯拉夫韦茨', event: 'battle' },
+    { lon: 36.0, lat: 55.15, survivors: 88000, date: '1812-10-26', city: null },
+    { lon: 35.4, lat: 55.3, survivors: 87000, date: '1812-10-28', city: null },
+    { lon: 34.8, lat: 55.25, survivors: 70000, date: '1812-10-31', city: null },
+    { lon: 34.3, lat: 55.2, survivors: 55000, date: '1812-11-03', city: '维亚济马', event: 'battle' },
+    { lon: 33.8, lat: 55.0, survivors: 45000, date: '1812-11-04', city: null },
+    { lon: 33.3, lat: 54.8, survivors: 37000, date: '1812-11-06', city: '多罗戈布日' },
+    { lon: 32.6, lat: 54.7, survivors: 30000, date: '1812-11-07', city: null },
+    { lon: 32.0, lat: 54.6, survivors: 24000, date: '1812-11-09', city: '斯摩棱斯克', event: 'city' },
+    { lon: 31.5, lat: 54.5, survivors: 22000, date: '1812-11-13', city: null },
+    { lon: 31.0, lat: 54.4, survivors: 20000, date: '1812-11-17', city: '克拉斯诺耶', event: 'battle' },
+    { lon: 30.7, lat: 54.4, survivors: 20000, date: '1812-11-18', city: null },
+    { lon: 30.4, lat: 54.4, survivors: 20000, date: '1812-11-19', city: '奥尔沙' },
+    { lon: 29.8, lat: 54.4, survivors: 20000, date: '1812-11-20', city: null },
+    { lon: 29.2, lat: 54.4, survivors: 20000, date: '1812-11-22', city: '博布尔' },
+    { lon: 28.8, lat: 54.35, survivors: 20000, date: '1812-11-24', city: null },
+    { lon: 28.5, lat: 54.3, survivors: 20000, date: '1812-11-26', city: '斯图坚卡', event: 'battle' },
+    { lon: 28.3, lat: 54.4, survivors: 20000, date: '1812-11-29', city: '别列津纳', event: 'battle' },
+    { lon: 27.9, lat: 54.45, survivors: 17000, date: '1812-11-30', city: null },
+    { lon: 27.5, lat: 54.5, survivors: 14000, date: '1812-12-01', city: null },
+    { lon: 27.1, lat: 54.4, survivors: 13000, date: '1812-12-02', city: null },
+    { lon: 26.8, lat: 54.3, survivors: 12000, date: '1812-12-03', city: '莫洛杰奇诺' },
+    { lon: 26.6, lat: 54.35, survivors: 11000, date: '1812-12-04', city: null },
+    { lon: 26.4, lat: 54.4, survivors: 10000, date: '1812-12-05', city: '斯莫尔贡', event: 'event' },
+    { lon: 25.9, lat: 54.5, survivors: 9000, date: '1812-12-07', city: null },
+    { lon: 25.3, lat: 54.7, survivors: 8000, date: '1812-12-09', city: '维尔纽斯', event: 'city' },
+    { lon: 24.9, lat: 54.6, survivors: 7000, date: '1812-12-10', city: null },
+    { lon: 24.6, lat: 54.5, survivors: 6000, date: '1812-12-12', city: null },
+    { lon: 24.3, lat: 54.7, survivors: 5000, date: '1812-12-13', city: null },
+    { lon: 24.0, lat: 55.0, survivors: 4000, date: '1812-12-14', city: '科夫诺', event: 'end' }
 ]
 
-// 施瓦岑贝格军团南翼路线
+// 施瓦岑贝格军团南翼路线 (奥地利辅助军团，约34000人)
 export const schwarzenbergRoute = [
-    { lon: 23.8, lat: 53.7, survivors: 30000, date: '1812-06-24', city: '格罗德诺' },
-    { lon: 25.0, lat: 53.5, survivors: 29500, date: '1812-07-10', city: null },
-    { lon: 26.5, lat: 53.3, survivors: 29000, date: '1812-07-25', city: null },
-    { lon: 28.0, lat: 53.0, survivors: 28500, date: '1812-08-08', city: '因科沃' },
-    { lon: 29.5, lat: 52.8, survivors: 28000, date: '1812-08-20', city: '戈罗杰奇诺' },
-    { lon: 28.5, lat: 52.5, survivors: 27500, date: '1812-09-15', city: null },
-    { lon: 27.0, lat: 52.3, survivors: 27000, date: '1812-10-10', city: null },
-    { lon: 25.5, lat: 52.0, survivors: 28000, date: '1812-11-01', city: null },
-    { lon: 24.0, lat: 52.2, survivors: 30000, date: '1812-12-01', city: '布格河' }
+    { lon: 22.0, lat: 52.2, survivors: 34000, date: '1812-07-02', city: '德罗希钦', event: 'start' },
+    { lon: 23.8, lat: 53.1, survivors: 33500, date: '1812-07-15', city: '格罗德诺' },
+    { lon: 25.0, lat: 52.8, survivors: 33000, date: '1812-07-25', city: null },
+    { lon: 26.0, lat: 52.5, survivors: 32500, date: '1812-08-08', city: '因科沃', event: 'battle' },
+    { lon: 27.5, lat: 52.2, survivors: 32000, date: '1812-08-12', city: '戈罗杰奇诺', event: 'battle' },
+    { lon: 28.0, lat: 52.0, survivors: 31500, date: '1812-09-15', city: null },
+    { lon: 27.0, lat: 52.3, survivors: 31000, date: '1812-10-10', city: null },
+    { lon: 26.0, lat: 52.5, survivors: 30500, date: '1812-11-01', city: null },
+    { lon: 24.5, lat: 52.7, survivors: 30000, date: '1812-11-15', city: null },
+    { lon: 22.5, lat: 52.3, survivors: 30000, date: '1812-12-14', city: '布格河', event: 'end' }
 ]
 
-// 温度数据 - 基于历史记录
+// 温度数据 - 基于Minard原图（已从Réaumur转换为摄氏度，乘以1.25）
+// 注意：Minard原图的温度单位是Réaumur，需要 ×1.25 转为摄氏度
 export const temperatureData = [
-    { date: '1812-06-24', temp: 20, description: '温暖的夏日' },
-    { date: '1812-07-15', temp: 25, description: '炎热' },
-    { date: '1812-08-16', temp: 18, description: '温和' },
-    { date: '1812-09-07', temp: 12, description: '凉爽' },
-    { date: '1812-09-14', temp: 8, description: '初秋' },
-    { date: '1812-10-18', temp: 0, description: '霜冻开始' },
-    { date: '1812-10-24', temp: 0, description: '寒冷' },
-    { date: '1812-11-09', temp: -9, description: '严寒来临' },
-    { date: '1812-11-14', temp: -21, description: '酷寒' },
-    { date: '1812-11-24', temp: -11, description: '短暂回暖' },
-    { date: '1812-11-28', temp: -20, description: '刺骨寒冷' },
-    { date: '1812-12-01', temp: -26, description: '极寒' },
-    { date: '1812-12-06', temp: -37, description: '致命严寒' },
-    { date: '1812-12-07', temp: -30, description: '持续低温' }
+    { date: '1812-06-24', temp: 22, lon: 24.0, description: '温暖的夏日', phase: 'advance' },
+    { date: '1812-07-15', temp: 28, lon: 27.0, description: '炎热酷暑', phase: 'advance' },
+    { date: '1812-07-29', temp: 25, lon: 30.0, description: '暴风雨后', phase: 'advance' },
+    { date: '1812-08-17', temp: 20, lon: 32.0, description: '温和', phase: 'advance' },
+    { date: '1812-09-07', temp: 15, lon: 35.8, description: '凉爽', phase: 'advance' },
+    { date: '1812-09-14', temp: 10, lon: 37.6, description: '初秋', phase: 'advance' },
+    { date: '1812-10-18', temp: 0, lon: 37.6, description: '霜冻开始', phase: 'retreat' },
+    { date: '1812-10-24', temp: 0, lon: 36.0, description: '寒冷', phase: 'retreat' },
+    { date: '1812-11-09', temp: -11, lon: 33.2, description: '严寒来临 (Réaumur: -9°)', phase: 'retreat' },
+    { date: '1812-11-14', temp: -26, lon: 32.0, description: '酷寒 (Réaumur: -21°)', phase: 'retreat' },
+    { date: '1812-11-24', temp: -14, lon: 29.2, description: '短暂回暖 (Réaumur: -11°)', phase: 'retreat' },
+    { date: '1812-11-28', temp: -25, lon: 28.5, description: '刺骨寒冷 (Réaumur: -20°)', phase: 'retreat' },
+    { date: '1812-12-01', temp: -30, lon: 27.2, description: '极寒 (Réaumur: -24°)', phase: 'retreat' },
+    { date: '1812-12-06', temp: -38, lon: 26.7, description: '致命严寒 (Réaumur: -30°)', phase: 'retreat' },
+    { date: '1812-12-07', temp: -33, lon: 25.3, description: '持续低温 (Réaumur: -26°)', phase: 'retreat' }
 ]
 
 // 章节数据 - 参考1812.tass.ru的多章节叙事结构
@@ -596,16 +692,33 @@ export const historicalFigures = [
     }
 ]
 
-// 城市标签
+// 城市标签 - 基于Minard原图的20个城市 + 补充
 export const cityLabels = [
-    { name: '科夫诺', nameEn: 'Kovno', lat: 54.9, lon: 24.0 },
-    { name: '维尔纽斯', nameEn: 'Vilnius', lat: 54.7, lon: 25.3 },
-    { name: '维捷布斯克', nameEn: 'Vitebsk', lat: 55.2, lon: 30.2 },
+    // Minard原图城市
+    { name: '科夫诺', nameEn: 'Kowno', lat: 55.0, lon: 24.0 },
+    { name: '维尔纽斯', nameEn: 'Wilna', lat: 54.7, lon: 25.3 },
+    { name: '斯莫尔贡', nameEn: 'Smorgoni', lat: 54.4, lon: 26.4 },
+    { name: '莫洛杰奇诺', nameEn: 'Molodexno', lat: 54.3, lon: 26.8 },
+    { name: '格卢博科耶', nameEn: 'Gloubokoe', lat: 55.2, lon: 27.7 },
+    { name: '明斯克', nameEn: 'Minsk', lat: 53.9, lon: 27.6 },
+    { name: '斯图坚卡', nameEn: 'Studienska', lat: 54.3, lon: 28.5 },
+    { name: '波洛茨克', nameEn: 'Polotzk', lat: 55.5, lon: 28.7 },
+    { name: '博布尔', nameEn: 'Bobr', lat: 54.4, lon: 29.2 },
+    { name: '维捷布斯克', nameEn: 'Witebsk', lat: 55.3, lon: 30.2 },
+    { name: '奥尔沙', nameEn: 'Orscha', lat: 54.5, lon: 30.4 },
+    { name: '莫吉廖夫', nameEn: 'Mohilow', lat: 53.9, lon: 30.4 },
     { name: '斯摩棱斯克', nameEn: 'Smolensk', lat: 54.8, lon: 32.0 },
-    { name: '博罗季诺', nameEn: 'Borodino', lat: 55.5, lon: 35.8 },
+    { name: '多罗戈布日', nameEn: 'Dorogobouge', lat: 54.9, lon: 33.2 },
+    { name: '维亚济马', nameEn: 'Wixma', lat: 55.2, lon: 34.3 },
+    { name: '恰特', nameEn: 'Chjat', lat: 55.5, lon: 34.4 },
+    { name: '莫扎伊斯克', nameEn: 'Mojaisk', lat: 55.5, lon: 36.0 },
     { name: '莫斯科', nameEn: 'Moscow', lat: 55.75, lon: 37.6 },
+    { name: '塔鲁蒂诺', nameEn: 'Tarantino', lat: 55.3, lon: 36.6 },
+    { name: '小雅罗斯拉夫韦茨', nameEn: 'Maloyaroslavets', lat: 55.0, lon: 36.5 },
+    // 补充城市
+    { name: '博罗季诺', nameEn: 'Borodino', lat: 55.5, lon: 35.8 },
     { name: '别列津纳', nameEn: 'Berezina', lat: 54.3, lon: 28.5 },
-    { name: '明斯克', nameEn: 'Minsk', lat: 53.9, lon: 27.5 },
+    { name: '克拉斯诺耶', nameEn: 'Krasnoi', lat: 54.4, lon: 31.0 },
     { name: '圣彼得堡', nameEn: 'St. Petersburg', lat: 59.9, lon: 30.3 }
 ]
 

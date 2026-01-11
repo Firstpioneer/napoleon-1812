@@ -6,5 +6,16 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router'],
+          leaflet: ['leaflet'],
+          d3: ['d3']
+        }
+      }
+    }
   }
 })
