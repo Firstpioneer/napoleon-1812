@@ -44,7 +44,7 @@
         v-model:show-retreat="showRetreat"
         v-model:show-schwarzenberg="showSchwarzenberg"
       />
-
+      
       <!-- Scrolling Content -->
       <div class="scroll-container" ref="scrollContainer">
         <!-- Prologue: Minard Map -->

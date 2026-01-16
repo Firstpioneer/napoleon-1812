@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  base: '/napoleon-1812/',  // 替换为你的仓库名
+  base: process.env.NODE_ENV === 'production' ? '/napoleon-1812/' : '/',
   plugins: [vue()],
   server: {
     port: 5173,
