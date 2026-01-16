@@ -166,12 +166,52 @@ function handleEnter() {
 }
 
 @media (max-width: 768px) {
+  .splash-content {
+    padding: 20px;
+  }
+  
   .splash-year {
-    font-size: 5rem;
+    font-size: 4rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
   }
   
   .splash-title {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+  
+  .splash-subtitle {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    padding: 0 10px;
+  }
+  
+  .splash-enter {
+    padding: 14px 40px;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+  }
+  
+  .splash-scroll-hint {
+    bottom: 30px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .splash-year {
+    font-size: 3rem;
+  }
+  
+  .splash-title {
+    font-size: 1rem;
+  }
+  
+  .splash-subtitle {
+    font-size: 0.8rem;
   }
 }
 </style>

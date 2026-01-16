@@ -13,11 +13,6 @@
         </div>
 
         <div class="nav-cards">
-          <div class="nav-card featured" @click="navigateTo('/game')">
-            <span class="card-icon">🎮</span>
-            <h4>绝望的行军</h4>
-            <p>体验1812远征</p>
-          </div>
           <div class="nav-card" @click="navigateTo('/dashboard')">
             <span class="card-icon">📊</span>
             <h4>单屏仪表盘</h4>
@@ -32,6 +27,11 @@
             <span class="card-icon">📖</span>
             <h4>历史档案</h4>
             <p>详细战役记录</p>
+          </div>
+          <div class="nav-card" @click="navigateTo('/game')">
+            <span class="card-icon">🎮</span>
+            <h4>绝望的行军</h4>
+            <p>体验1812远征</p>
           </div>
         </div>
 
@@ -169,16 +169,6 @@ function closeInfoPanel() {
   background: rgba(184, 134, 11, 0.15);
   border-color: #B8860B;
   transform: translateY(-5px);
-}
-
-.nav-card.featured {
-  border-color: #B8860B;
-  background: rgba(184, 134, 11, 0.1);
-}
-
-.nav-card.featured:hover {
-  background: rgba(184, 134, 11, 0.25);
-  box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
 }
 
 .card-icon {
@@ -327,30 +317,77 @@ function closeInfoPanel() {
 
 /* 响应式 */
 @media (max-width: 768px) {
+  .welcome-content {
+    padding: 20px;
+  }
+  
+  .hero-section {
+    margin-bottom: 40px;
+  }
+  
   .hero-title {
-    font-size: 5rem;
+    font-size: 4rem;
   }
   
   .hero-subtitle {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
+  }
+  
+  .hero-desc {
+    font-size: 1rem;
+    line-height: 1.8;
   }
   
   .nav-cards {
     flex-direction: column;
     align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
   }
   
   .nav-card {
-    width: 200px;
+    width: 85%;
+    max-width: 280px;
+    padding: 20px 25px;
+    min-width: unset;
   }
   
-  .map-info-panel,
-  .battle-list {
-    display: none;
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
   }
   
-  .map-nav {
-    padding: 10px 15px;
+  .nav-card h4 {
+    font-size: 1rem;
+  }
+  
+  .nav-card p {
+    font-size: 0.8rem;
+  }
+  
+  .info-content {
+    margin: 20px;
+    padding: 25px;
+    max-width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .hero-desc {
+    font-size: 0.9rem;
+  }
+  
+  .nav-card {
+    width: 90%;
+    padding: 18px 20px;
   }
 }
 </style>

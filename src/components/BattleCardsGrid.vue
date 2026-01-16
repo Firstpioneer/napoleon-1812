@@ -252,21 +252,64 @@ function goToBattle(id) {
 
 @media (max-width: 768px) {
   .battles-container {
-    padding: 50px 20px;
+    padding: 40px 15px;
   }
   
   .battles-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+  
+  .battles-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 30px;
   }
   
   .battles-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
+  }
+  
+  .battle-image {
+    height: 150px;
+  }
+  
+  .battle-content {
+    padding: 15px;
+  }
+  
+  .battle-title {
+    font-size: 1.2rem;
+  }
+  
+  .battle-title-en {
+    font-size: 0.85rem;
+  }
+  
+  .battle-date {
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+  }
+  
+  .battle-overview {
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+  }
+  
+  .battle-stats {
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-top: 12px;
+  }
+  
+  .stat-value {
+    font-size: 1rem;
   }
   
   .battle-enter {
     opacity: 1;
     transform: translateX(0);
+    font-size: 0.85rem;
   }
 }
 </style>

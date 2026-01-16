@@ -189,7 +189,8 @@ import BattleCardsGrid from '../components/BattleCardsGrid.vue'
 
 import { setTime } from '../stores/globalState.js'
 
-const splashDismissed = ref(false)
+// 使用 sessionStorage 保存 splash 状态，避免返回时重新显示
+const splashDismissed = ref(sessionStorage.getItem('splashDismissed') === 'true')
 const currentChapterIndex = ref(0)
 const selectedEvent = ref(null)
 const showAdvance = ref(true)
@@ -221,6 +222,7 @@ const showComparison = computed(() => {
 
 function dismissSplash() {
   splashDismissed.value = true
+  sessionStorage.setItem('splashDismissed', 'true')
 }
 
 function handleChapterInView(chapterId) {
@@ -365,5 +367,19 @@ watch(currentChapterIndex, (newIndex) => {
 
 .chapter {
   pointer-events: auto;
+}
+
+/* 响应式 - 手机 */
+@media (max-width: 768px) {
+  .back-home {
+    top: 10px;
+    left: 10px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+  
+  .back-icon {
+    font-size: 1rem;
+  }
 }
 </style>

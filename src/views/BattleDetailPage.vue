@@ -2,7 +2,7 @@
   <div class="battle-detail-page">
     <!-- 返回按钮 -->
     <div class="nav-bar">
-      <router-link to="/" class="back-btn">← 首页</router-link>
+      <button class="back-btn" @click="goBack">← 返回</button>
       <div class="battle-nav">
         <button 
           v-if="prevBattle" 
@@ -185,6 +185,10 @@ function goToBattle(id) {
   router.push(`/battle/${id}`)
 }
 
+function goBack() {
+  router.back()
+}
+
 function initMiniMap() {
   if (!miniMapRef.value || !battle.value) return
   
@@ -253,9 +257,12 @@ watch(battleId, () => {
 }
 
 .back-btn {
+  background: none;
+  border: none;
   color: #B8860B;
   text-decoration: none;
   font-size: 0.95rem;
+  cursor: pointer;
   transition: color 0.3s;
 }
 
@@ -626,6 +633,140 @@ watch(battleId, () => {
   
   .battle-main {
     padding: 30px;
+  }
+}
+
+/* 响应式 - 手机 */
+@media (max-width: 768px) {
+  .nav-bar {
+    padding: 12px 15px;
+  }
+  
+  .back-btn {
+    font-size: 0.85rem;
+  }
+  
+  .battle-nav {
+    gap: 10px;
+  }
+  
+  .nav-arrow {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .battle-header {
+    height: 35vh;
+    min-height: 280px;
+    margin-top: 50px;
+  }
+  
+  .header-overlay {
+    padding: 20px;
+  }
+  
+  .battle-type {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+  }
+  
+  .battle-title {
+    font-size: 1.6rem;
+  }
+  
+  .battle-title-en {
+    font-size: 1rem;
+  }
+  
+  .battle-date {
+    font-size: 1rem;
+  }
+  
+  .battle-main {
+    padding: 20px 15px;
+  }
+  
+  .content-grid {
+    gap: 25px;
+  }
+  
+  .overview-section {
+    padding: 20px;
+  }
+  
+  .overview-text {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  .detail-section {
+    font-size: 0.95rem;
+  }
+  
+  .content-right > div {
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  
+  .content-right h3 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+  
+  .stats-grid {
+    gap: 12px;
+  }
+  
+  .stat-value {
+    font-size: 1rem;
+  }
+  
+  .mini-map {
+    height: 150px;
+  }
+  
+  .action-btn {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  
+  .related-battles {
+    padding: 30px 15px;
+  }
+  
+  .related-battles h2 {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+  }
+  
+  .battles-grid {
+    gap: 15px;
+  }
+  
+  .card-image {
+    height: 120px;
+  }
+  
+  .card-content {
+    padding: 14px;
+  }
+  
+  .card-content h4 {
+    font-size: 1rem;
+  }
+}
+
+/* 响应式 - 小手机 */
+@media (max-width: 480px) {
+  .battle-title {
+    font-size: 1.4rem;
+  }
+  
+  .nav-arrow {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

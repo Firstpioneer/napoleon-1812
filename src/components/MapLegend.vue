@@ -156,10 +156,49 @@ const isCollapsed = ref(false)
 
 @media (max-width: 768px) {
   .map-legend {
-    bottom: 160px;
-    left: 15px;
-    padding: 12px 15px;
+    bottom: auto;
+    top: 70px;
+    left: 10px;
+    padding: 10px 12px;
     font-size: 0.75rem;
+    max-width: 180px;
+  }
+  
+  .map-legend.collapsed {
+    padding: 8px 12px;
+  }
+  
+  .legend-title {
+    font-size: 0.7rem;
+  }
+  
+  .collapse-btn {
+    font-size: 1rem;
+  }
+  
+  .legend-content {
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+  
+  .legend-item {
+    gap: 8px;
+    margin: 8px 0;
+    font-size: 0.7rem;
+  }
+  
+  .legend-item input[type="checkbox"] {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .legend-line {
+    width: 22px;
+    height: 3px;
+  }
+  
+  .legend-icon {
+    font-size: 0.85rem;
   }
 }
 </style>

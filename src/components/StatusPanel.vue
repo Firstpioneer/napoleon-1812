@@ -156,14 +156,54 @@ function formatTroops(num) {
 
 @media (max-width: 768px) {
   .status-panel {
-    top: 15px;
-    left: 15px;
-    padding: 12px 18px;
-    gap: 20px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 10px 15px;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .status-item {
+    min-width: 60px;
+  }
+  
+  .status-label {
+    font-size: 0.6rem;
+    margin-bottom: 3px;
   }
   
   .status-value {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .phase-indicator {
+    padding-left: 12px;
+    gap: 6px;
+  }
+  
+  .phase-dot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .phase-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-panel {
+    gap: 8px;
+  }
+  
+  .status-item {
+    min-width: 50px;
+  }
+  
+  .status-value {
+    font-size: 0.85rem;
   }
 }
 </style>
