@@ -26,6 +26,20 @@
             <span class="toc-date">{{ section.date }}</span>
             <span class="toc-name">{{ section.title }}</span>
           </li>
+          <li 
+            :class="{ active: currentSection === sections.length }"
+            @click="scrollToSection(sections.length)"
+          >
+            <span class="toc-date">战役进程</span>
+            <span class="toc-name">探索战役阶段</span>
+          </li>
+          <li 
+            :class="{ active: currentSection === sections.length + 1 }"
+            @click="scrollToSection(sections.length + 1)"
+          >
+            <span class="toc-date">决定性时刻</span>
+            <span class="toc-name">关键战役</span>
+          </li>
         </ul>
       </nav>
 
@@ -70,6 +84,64 @@
                 <strong>{{ figure.name }}</strong>
                 <span>{{ figure.role }}</span>
               </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 战役阶段 -->
+        <article 
+          :ref="el => sectionRefs[sections.length] = el"
+          class="content-section"
+        >
+          <div class="section-header">
+            <span class="section-date">战役进程</span>
+            <h2 class="section-title">探索战役阶段</h2>
+          </div>
+          <p class="intro-text">点击下方阶段深入了解每个时期的详细故事</p>
+          <div class="phase-list">
+            <div 
+              v-for="(phase, index) in campaignPhases" 
+              :key="phase.id"
+              class="phase-item"
+              @click="openPhaseDetail(phase, index)"
+            >
+              <span class="phase-number">{{ index + 1 }}</span>
+              <div class="phase-info">
+                <strong>{{ phase.title }}</strong>
+                <span class="phase-subtitle">{{ phase.titleEn }}</span>
+                <span class="phase-date">{{ phase.period }}</span>
+              </div>
+              <span class="phase-arrow">→</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 关键战役 -->
+        <article 
+          :ref="el => sectionRefs[sections.length + 1] = el"
+          class="content-section"
+        >
+          <div class="section-header">
+            <span class="section-date">决定性时刻</span>
+            <h2 class="section-title">关键战役</h2>
+          </div>
+          <p class="intro-text">1812年俄国战役的10个决定性时刻，点击查看详情</p>
+          <div class="battle-list">
+            <div 
+              v-for="battle in keyBattles" 
+              :key="battle.id"
+              class="battle-item"
+              :class="battle.phase"
+              @click="$router.push(`/battle/${battle.id}`)"
+            >
+              <span class="battle-date">{{ battle.date }}</span>
+              <div class="battle-info">
+                <strong>{{ battle.title }}</strong>
+                <span class="battle-subtitle">{{ battle.titleEn }}</span>
+              </div>
+              <span class="battle-phase-tag" :class="battle.phase">
+                {{ battle.phase === 'advance' ? '进攻' : '撤退' }}
+              </span>
             </div>
           </div>
         </article>
@@ -147,13 +219,29 @@
         <div class="figure-bio" v-html="figureDetail.data?.bio"></div>
       </div>
     </div>
+
+    <!-- 阶段详情弹窗 -->
+    <PhaseDetailView 
+      :visible="phaseDetailVisible"
+      :phase="selectedPhase"
+      :current-index="selectedPhaseIndex"
+      :total-count="campaignPhases.length"
+      @close="closePhaseDetail"
+      @navigate="navigatePhase"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import PhaseDetailView from '../components/PhaseDetailView.vue'
+import { campaignPhases } from '../stores/phasesData.js'
+import { keyBattles } from '../stores/battlesData.js'
 
 const currentSection = ref(0)
+const phaseDetailVisible = ref(false)
+const selectedPhase = ref(null)
+const selectedPhaseIndex = ref(0)
 const sectionRefs = ref([])
 
 const imageModal = reactive({
@@ -315,6 +403,24 @@ function showFigureDetail(figure) {
 
 function closeFigureDetail() {
   figureDetail.visible = false
+}
+
+function openPhaseDetail(phase, index) {
+  selectedPhase.value = phase
+  selectedPhaseIndex.value = index
+  phaseDetailVisible.value = true
+}
+
+function closePhaseDetail() {
+  phaseDetailVisible.value = false
+}
+
+function navigatePhase(direction) {
+  const newIndex = selectedPhaseIndex.value + direction
+  if (newIndex >= 0 && newIndex < campaignPhases.length) {
+    selectedPhaseIndex.value = newIndex
+    selectedPhase.value = campaignPhases[newIndex]
+  }
 }
 
 onMounted(() => {
@@ -635,6 +741,152 @@ onMounted(() => {
 
 .nav-btn:hover {
   background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%);
+}
+
+/* 战役阶段列表 */
+.intro-text {
+  color: #A09080;
+  margin-bottom: 25px;
+}
+
+.phase-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.phase-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 20px;
+  background: rgba(26, 26, 26, 0.6);
+  border: 1px solid rgba(184, 134, 11, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.phase-item:hover {
+  background: rgba(184, 134, 11, 0.15);
+  border-color: #B8860B;
+  transform: translateX(5px);
+}
+
+.phase-number {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+  color: #1A1A1A;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.phase-info {
+  flex: 1;
+}
+
+.phase-info strong {
+  display: block;
+  color: #E8E0D5;
+  font-size: 1.1rem;
+  margin-bottom: 3px;
+}
+
+.phase-subtitle {
+  display: block;
+  color: #A09080;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.phase-date {
+  display: block;
+  color: #B8860B;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+.phase-arrow {
+  color: #B8860B;
+  font-size: 1.2rem;
+}
+
+/* 关键战役列表 */
+.battle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.battle-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: rgba(26, 26, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.battle-item.advance {
+  border-left-color: #D4A373;
+}
+
+.battle-item.retreat {
+  border-left-color: #4A90D9;
+}
+
+.battle-item:hover {
+  background: rgba(184, 134, 11, 0.1);
+  transform: translateX(5px);
+}
+
+.battle-item .battle-date {
+  min-width: 100px;
+  color: #A09080;
+  font-size: 0.85rem;
+}
+
+.battle-info {
+  flex: 1;
+}
+
+.battle-info strong {
+  display: block;
+  color: #E8E0D5;
+  margin-bottom: 2px;
+}
+
+.battle-subtitle {
+  color: #A09080;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.battle-phase-tag {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.battle-phase-tag.advance {
+  background: rgba(212, 163, 115, 0.2);
+  color: #D4A373;
+}
+
+.battle-phase-tag.retreat {
+  background: rgba(74, 144, 217, 0.2);
+  color: #4A90D9;
 }
 
 /* 参考资料 */

@@ -1,8 +1,12 @@
 <template>
-  <div class="comparison-panel">
-    <h4 class="comparison-title">兵力对比 / Force Comparison</h4>
+  <div class="comparison-panel" :class="{ collapsed: isCollapsed }">
+    <div class="panel-header" @click="isCollapsed = !isCollapsed">
+      <h4 class="comparison-title">兵力对比 / Force Comparison</h4>
+      <span class="collapse-btn">{{ isCollapsed ? '‹' : '›' }}</span>
+    </div>
     
     <!-- Napoleon's Force -->
+    <div class="panel-content" v-show="!isCollapsed">
     <div class="comparison-bar">
       <div class="comparison-label">
         <span>拿破仑主力</span>
@@ -46,11 +50,14 @@
     <div class="comparison-insight" v-if="phase === 'retreat'">
       <p>施瓦岑贝格在南翼采取了保守战术，避免了主力军团遭遇的灾难性损失。</p>
     </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+
+const isCollapsed = ref(false)
 
 const props = defineProps({
   currentTroops: {
@@ -108,15 +115,40 @@ function formatNumber(num) {
   z-index: 100;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+}
+
+.comparison-panel.collapsed {
+  width: auto;
+  padding: 12px 16px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.collapse-btn {
+  font-size: 1.2rem;
+  color: #C9A86C;
+  transition: transform 0.3s;
+  line-height: 1;
 }
 
 .comparison-title {
   font-family: 'Playfair Display', serif;
   font-size: 0.85rem;
   color: #C9A86C;
-  margin-bottom: 20px;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
+
+.panel-content {
+  margin-top: 20px;
 }
 
 .comparison-bar {

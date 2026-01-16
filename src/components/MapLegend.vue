@@ -1,45 +1,52 @@
 <template>
-  <div class="map-legend">
-    <h4 class="legend-title">图例 / Legend</h4>
-    
-    <label class="legend-item clickable">
-      <input type="checkbox" :checked="showAdvance" @change="$emit('update:showAdvance', $event.target.checked)" />
-      <span class="legend-line advance"></span>
-      <span>进攻路线 / Advance</span>
-    </label>
-    
-    <label class="legend-item clickable">
-      <input type="checkbox" :checked="showRetreat" @change="$emit('update:showRetreat', $event.target.checked)" />
-      <span class="legend-line retreat"></span>
-      <span>撤退路线 / Retreat</span>
-    </label>
-    
-    <label class="legend-item clickable">
-      <input type="checkbox" :checked="showSchwarzenberg" @change="$emit('update:showSchwarzenberg', $event.target.checked)" />
-      <span class="legend-line schwarzenberg"></span>
-      <span>施瓦岑贝格军团</span>
-    </label>
-    
-    <div class="legend-divider"></div>
-    
-    <div class="legend-item">
-      <span class="legend-icon">⚔️</span>
-      <span>重大战役 / Battle</span>
+  <div class="map-legend" :class="{ collapsed: isCollapsed }">
+    <div class="legend-header" @click="isCollapsed = !isCollapsed">
+      <h4 class="legend-title">图例 / Legend</h4>
+      <span class="collapse-btn">{{ isCollapsed ? '›' : '‹' }}</span>
     </div>
     
-    <div class="legend-item">
-      <span class="legend-icon">❄️</span>
-      <span>极寒事件 / Frost</span>
-    </div>
-    
-    <div class="legend-item">
-      <span class="legend-icon">🏛️</span>
-      <span>重要城市 / City</span>
+    <div class="legend-content" v-show="!isCollapsed">
+      <label class="legend-item clickable">
+        <input type="checkbox" :checked="showAdvance" @change="$emit('update:showAdvance', $event.target.checked)" />
+        <span class="legend-line advance"></span>
+        <span>进攻路线 / Advance</span>
+      </label>
+      
+      <label class="legend-item clickable">
+        <input type="checkbox" :checked="showRetreat" @change="$emit('update:showRetreat', $event.target.checked)" />
+        <span class="legend-line retreat"></span>
+        <span>撤退路线 / Retreat</span>
+      </label>
+      
+      <label class="legend-item clickable">
+        <input type="checkbox" :checked="showSchwarzenberg" @change="$emit('update:showSchwarzenberg', $event.target.checked)" />
+        <span class="legend-line schwarzenberg"></span>
+        <span>施瓦岑贝格军团</span>
+      </label>
+      
+      <div class="legend-divider"></div>
+      
+      <div class="legend-item">
+        <span class="legend-icon">⚔️</span>
+        <span>重大战役 / Battle</span>
+      </div>
+      
+      <div class="legend-item">
+        <span class="legend-icon">❄️</span>
+        <span>极寒事件 / Frost</span>
+      </div>
+      
+      <div class="legend-item">
+        <span class="legend-icon">🏛️</span>
+        <span>重要城市 / City</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 defineProps({
   showAdvance: Boolean,
   showRetreat: Boolean,
@@ -47,6 +54,8 @@ defineProps({
 })
 
 defineEmits(['update:showAdvance', 'update:showRetreat', 'update:showSchwarzenberg'])
+
+const isCollapsed = ref(false)
 </script>
 
 <style scoped>
@@ -61,6 +70,26 @@ defineEmits(['update:showAdvance', 'update:showRetreat', 'update:showSchwarzenbe
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.1);
   font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.map-legend.collapsed {
+  padding: 12px 16px;
+}
+
+.legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.collapse-btn {
+  font-size: 1.2rem;
+  color: #C9A86C;
+  transition: transform 0.3s;
+  line-height: 1;
 }
 
 .legend-title {
@@ -69,9 +98,13 @@ defineEmits(['update:showAdvance', 'update:showRetreat', 'update:showSchwarzenbe
   color: #C9A86C;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin: 0;
+}
+
+.legend-content {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .legend-item {

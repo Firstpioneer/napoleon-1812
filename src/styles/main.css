@@ -692,6 +692,9 @@ body {
     padding: 60px;
     text-align: center;
 }
+.minard-section .chapter-text {
+    color: var(--color-text-dark);
+}
 
 .minard-image {
     width: 100%;

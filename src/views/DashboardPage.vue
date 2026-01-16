@@ -53,6 +53,39 @@
 
       <!-- 右侧：战役列表 -->
       <aside class="right-panel">
+        <!-- 选区统计信息 -->
+        <div v-if="brushSelection" class="selection-stats">
+          <div class="panel-title">
+            选区统计
+            <button class="clear-selection-btn" @click="clearBrushSelection">清除</button>
+          </div>
+          <div class="selection-info">
+            <div class="selection-stat">
+              <span class="label">时间范围</span>
+              <span class="value">{{ brushSelection.startDate }} ~ {{ brushSelection.endDate }}</span>
+            </div>
+            <div class="selection-stat">
+              <span class="label">起始兵力</span>
+              <span class="value troops">{{ formatNumber(brushSelection.startTroops) }}</span>
+            </div>
+            <div class="selection-stat">
+              <span class="label">结束兵力</span>
+              <span class="value troops">{{ formatNumber(brushSelection.endTroops) }}</span>
+            </div>
+            <div class="selection-stat">
+              <span class="label">兵力损失</span>
+              <span class="value loss">-{{ formatNumber(brushSelection.startTroops - brushSelection.endTroops) }}</span>
+            </div>
+            <div class="selection-stat">
+              <span class="label">损失率</span>
+              <span class="value loss">{{ ((brushSelection.startTroops - brushSelection.endTroops) / brushSelection.startTroops * 100).toFixed(1) }}%</span>
+            </div>
+            <div class="selection-stat" v-if="brushSelection.minTemp !== null">
+              <span class="label">温度范围</span>
+              <span class="value temp">{{ brushSelection.minTemp }}°C ~ {{ brushSelection.maxTemp }}°C</span>
+            </div>
+          </div>
+        </div>
         <div class="panel-title">关键战役</div>
         <div class="battles-list">
           <div 
@@ -120,6 +153,12 @@
             <span class="stat-value loss">{{ formatNumber(selectedBattle.stats.russianCasualties) }}</span>
           </div>
         </div>
+        <router-link 
+          :to="`/battle/${selectedBattle.id}`" 
+          class="modal-detail-link"
+        >
+          查看详细介绍 →
+        </router-link>
       </div>
     </div>
   </div>
@@ -141,8 +180,12 @@ const isPlaying = ref(false)
 const selectedBattle = ref(null)
 const hoverInfo = ref(null)
 const highlightedPoint = ref(null)
+const brushSelection = ref(null)
+const brushRange = ref(null)
 
 let map = null
+let routeSegments = { advance: [], retreat: [] }
+let highlightLayer = null
 let playInterval = null
 let troopsSvg = null
 let tempSvg = null
@@ -238,6 +281,7 @@ function initMap() {
 // 绘制路线
 function drawRoutes() {
   const maxTroops = napoleonAdvance[0].survivors
+  routeSegments = { advance: [], retreat: [] }
 
   // 进攻路线
   for (let i = 0; i < napoleonAdvance.length - 1; i++) {
@@ -245,12 +289,13 @@ function drawRoutes() {
     const end = napoleonAdvance[i + 1]
     const width = Math.max(2, (start.survivors / maxTroops) * 10)
 
-    L.polyline([[start.lat, start.lon], [end.lat, end.lon]], {
+    const segment = L.polyline([[start.lat, start.lon], [end.lat, end.lon]], {
       color: '#D4A373',
       weight: width,
       opacity: 0.8,
       lineCap: 'round'
     }).addTo(map)
+    routeSegments.advance.push({ segment, index: i, start, end })
   }
 
   // 撤退路线
@@ -260,12 +305,13 @@ function drawRoutes() {
     const end = napoleonRetreat[i + 1]
     const width = Math.max(1.5, (start.survivors / maxRetreat) * 6)
 
-    L.polyline([[start.lat, start.lon], [end.lat, end.lon]], {
+    const segment = L.polyline([[start.lat, start.lon], [end.lat, end.lon]], {
       color: '#2D2D2D',
       weight: width,
       opacity: 0.9,
       lineCap: 'round'
     }).addTo(map)
+    routeSegments.retreat.push({ segment, index: i + napoleonAdvance.length - 1, start, end })
   }
 
   // 施瓦岑贝格路线
@@ -276,6 +322,9 @@ function drawRoutes() {
     opacity: 0.6,
     dashArray: '8, 4'
   }).addTo(map)
+  
+  // 创建高亮图层
+  highlightLayer = L.layerGroup().addTo(map)
 }
 
 // 绘制战役标记
@@ -366,6 +415,7 @@ function initTroopsChart() {
 
   troopsSvg.append('path')
     .datum(data)
+    .attr('class', 'troops-area')
     .attr('fill', 'url(#troops-gradient)')
     .attr('d', area)
 
@@ -377,10 +427,19 @@ function initTroopsChart() {
 
   troopsSvg.append('path')
     .datum(data)
+    .attr('class', 'troops-line')
     .attr('fill', 'none')
     .attr('stroke', '#D4A373')
     .attr('stroke-width', 2)
     .attr('d', line)
+
+  // 高亮选区
+  troopsSvg.append('rect')
+    .attr('class', 'troops-highlight')
+    .attr('fill', 'rgba(212, 163, 115, 0.3)')
+    .attr('stroke', '#D4A373')
+    .attr('stroke-width', 2)
+    .attr('display', 'none')
 
   // Y轴
   troopsSvg.append('g')
@@ -402,6 +461,16 @@ function initTroopsChart() {
     .attr('fill', '#D4A373')
     .attr('stroke', '#fff')
     .attr('stroke-width', 2)
+
+  // 添加brush
+  const brush = d3.brushX()
+    .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
+    .on('brush', (event) => onTroopsBrush(event, xScale, data))
+    .on('end', (event) => onTroopsBrushEnd(event, xScale, data))
+
+  troopsSvg.append('g')
+    .attr('class', 'troops-brush')
+    .call(brush)
 
   updateTroopsChart()
 }
@@ -474,10 +543,19 @@ function initTempChart() {
 
   tempSvg.append('path')
     .datum(data)
+    .attr('class', 'temp-line')
     .attr('fill', 'none')
     .attr('stroke', '#4A90D9')
     .attr('stroke-width', 2)
     .attr('d', line)
+
+  // 高亮选区（用于显示从兵力图同步过来的选区）
+  tempSvg.append('rect')
+    .attr('class', 'temp-highlight')
+    .attr('fill', 'rgba(74, 144, 217, 0.3)')
+    .attr('stroke', '#4A90D9')
+    .attr('stroke-width', 2)
+    .attr('display', 'none')
 
   // 数据点
   tempSvg.selectAll('.temp-dot')
@@ -508,6 +586,16 @@ function initTempChart() {
     .attr('stroke', '#fff')
     .attr('stroke-width', 1)
     .attr('stroke-dasharray', '4,4')
+
+  // 提示文字
+  tempSvg.append('text')
+    .attr('class', 'temp-hint')
+    .attr('x', width - margin.right - 5)
+    .attr('y', margin.top + 12)
+    .attr('text-anchor', 'end')
+    .attr('fill', 'rgba(255,255,255,0.4)')
+    .attr('font-size', '10px')
+    .text('从兵力图框选同步')
 
   updateTempChart()
 }
@@ -579,6 +667,279 @@ function highlightBattle(battle) {
 
 function unhighlightBattle() {
   markers.battles.forEach(m => m.marker.closeTooltip())
+}
+
+// Brush处理 - 兵力图表
+function onTroopsBrush(event, xScale, data) {
+  if (!event.selection) return
+  const [x0, x1] = event.selection
+  const startIdx = Math.round(xScale.invert(x0))
+  const endIdx = Math.round(xScale.invert(x1))
+  brushRange.value = { startIdx, endIdx }
+  updateHighlights(startIdx, endIdx, data)
+}
+
+function onTroopsBrushEnd(event, xScale, data) {
+  if (!event.selection) {
+    clearBrushSelection()
+    return
+  }
+  const [x0, x1] = event.selection
+  const startIdx = Math.max(0, Math.round(xScale.invert(x0)))
+  const endIdx = Math.min(data.length - 1, Math.round(xScale.invert(x1)))
+  
+  if (startIdx === endIdx) {
+    clearBrushSelection()
+    return
+  }
+  
+  brushRange.value = { startIdx, endIdx }
+  updateBrushSelection(startIdx, endIdx, data)
+  updateHighlights(startIdx, endIdx, data)
+  updateTempChartHighlight(startIdx, endIdx, data)
+}
+
+// Brush处理 - 温度图表
+function onTempBrush(event, xScale, data) {
+  if (!event.selection) return
+  const [x0, x1] = event.selection
+  const startLon = xScale.invert(x0)
+  const endLon = xScale.invert(x1)
+  
+  const timelinePoints = timelineData.value
+  let startIdx = 0, endIdx = timelinePoints.length - 1
+  
+  for (let i = 0; i < timelinePoints.length; i++) {
+    if (timelinePoints[i].lon >= startLon && startIdx === 0) startIdx = i
+    if (timelinePoints[i].lon <= endLon) endIdx = i
+  }
+  
+  brushRange.value = { startIdx, endIdx }
+  updateHighlights(startIdx, endIdx, timelinePoints)
+}
+
+function onTempBrushEnd(event, xScale, data) {
+  if (!event.selection) {
+    clearBrushSelection()
+    return
+  }
+  const [x0, x1] = event.selection
+  const startLon = xScale.invert(x0)
+  const endLon = xScale.invert(x1)
+  
+  const timelinePoints = timelineData.value
+  let startIdx = 0, endIdx = timelinePoints.length - 1
+  
+  for (let i = 0; i < timelinePoints.length; i++) {
+    if (timelinePoints[i].lon >= startLon && startIdx === 0) startIdx = i
+    if (timelinePoints[i].lon <= endLon) endIdx = i
+  }
+  
+  if (startIdx >= endIdx) {
+    clearBrushSelection()
+    return
+  }
+  
+  brushRange.value = { startIdx, endIdx }
+  updateBrushSelection(startIdx, endIdx, timelinePoints)
+  updateHighlights(startIdx, endIdx, timelinePoints)
+  updateTroopsChartHighlight(startIdx, endIdx, timelinePoints)
+}
+
+// 新的温度图brush处理（使用时间索引）
+function onTempBrushNew(event, xScale, data) {
+  if (!event.selection) return
+  const [x0, x1] = event.selection
+  const startIdx = Math.round(xScale.invert(x0))
+  const endIdx = Math.round(xScale.invert(x1))
+  brushRange.value = { startIdx, endIdx }
+  updateHighlights(startIdx, endIdx, data)
+}
+
+function onTempBrushEndNew(event, xScale, data) {
+  if (!event.selection) {
+    clearBrushSelection()
+    return
+  }
+  const [x0, x1] = event.selection
+  const startIdx = Math.max(0, Math.round(xScale.invert(x0)))
+  const endIdx = Math.min(data.length - 1, Math.round(xScale.invert(x1)))
+  
+  if (startIdx === endIdx) {
+    clearBrushSelection()
+    return
+  }
+  
+  brushRange.value = { startIdx, endIdx }
+  updateBrushSelection(startIdx, endIdx, data)
+  updateHighlights(startIdx, endIdx, data)
+  updateTroopsChartHighlight(startIdx, endIdx, data)
+}
+
+// 更新选区统计数据
+function updateBrushSelection(startIdx, endIdx, data) {
+  const startPoint = data[startIdx]
+  const endPoint = data[endIdx]
+  
+  // 获取温度范围
+  const selectedPoints = data.slice(startIdx, endIdx + 1)
+  let minTemp = null, maxTemp = null
+  
+  selectedPoints.forEach(p => {
+    const tempRecord = temperatureData.find(t => t.date === p.date) ||
+      temperatureData.reduce((prev, curr) => {
+        const currDate = new Date(curr.date)
+        const pointDate = new Date(p.date)
+        if (currDate <= pointDate) return curr
+        return prev
+      }, temperatureData[0])
+    
+    if (tempRecord && tempRecord.temp !== null) {
+      if (minTemp === null || tempRecord.temp < minTemp) minTemp = tempRecord.temp
+      if (maxTemp === null || tempRecord.temp > maxTemp) maxTemp = tempRecord.temp
+    }
+  })
+  
+  brushSelection.value = {
+    startDate: startPoint.date,
+    endDate: endPoint.date,
+    startTroops: startPoint.survivors,
+    endTroops: endPoint.survivors,
+    minTemp,
+    maxTemp,
+    startIdx,
+    endIdx
+  }
+}
+
+// 清除选区
+function clearBrushSelection() {
+  brushSelection.value = null
+  brushRange.value = null
+  
+  // 清除地图高亮
+  if (highlightLayer) highlightLayer.clearLayers()
+  
+  // 重置路线透明度
+  routeSegments.advance.forEach(s => s.segment.setStyle({ opacity: 0.8 }))
+  routeSegments.retreat.forEach(s => s.segment.setStyle({ opacity: 0.9 }))
+  
+  // 清除图表高亮
+  if (troopsSvg) {
+    troopsSvg.select('.troops-highlight').attr('display', 'none')
+    troopsSvg.select('.troops-brush').call(d3.brushX().move, null)
+  }
+  if (tempSvg) {
+    tempSvg.select('.temp-highlight').attr('display', 'none')
+  }
+}
+
+// 更新高亮显示
+function updateHighlights(startIdx, endIdx, data) {
+  if (!highlightLayer) return
+  highlightLayer.clearLayers()
+  
+  // 降低非选中路线的透明度
+  routeSegments.advance.forEach(s => {
+    if (s.index >= startIdx && s.index < endIdx) {
+      s.segment.setStyle({ opacity: 1 })
+    } else {
+      s.segment.setStyle({ opacity: 0.2 })
+    }
+  })
+  
+  const retreatStartIdx = napoleonAdvance.length - 1
+  routeSegments.retreat.forEach(s => {
+    const actualIdx = s.index
+    if (actualIdx >= startIdx && actualIdx < endIdx) {
+      s.segment.setStyle({ opacity: 1 })
+    } else {
+      s.segment.setStyle({ opacity: 0.2 })
+    }
+  })
+  
+  // 在地图上绘制高亮路线
+  const highlightCoords = []
+  for (let i = startIdx; i <= endIdx && i < data.length; i++) {
+    highlightCoords.push([data[i].lat, data[i].lon])
+  }
+  
+  if (highlightCoords.length > 1) {
+    L.polyline(highlightCoords, {
+      color: '#FFD700',
+      weight: 6,
+      opacity: 0.8,
+      lineCap: 'round'
+    }).addTo(highlightLayer)
+    
+    // 添加起点和终点标记
+    L.circleMarker(highlightCoords[0], {
+      radius: 8,
+      fillColor: '#00FF00',
+      color: '#fff',
+      weight: 2,
+      fillOpacity: 1
+    }).addTo(highlightLayer)
+    
+    L.circleMarker(highlightCoords[highlightCoords.length - 1], {
+      radius: 8,
+      fillColor: '#FF4444',
+      color: '#fff',
+      weight: 2,
+      fillOpacity: 1
+    }).addTo(highlightLayer)
+  }
+}
+
+// 更新温度图表高亮
+function updateTempChartHighlight(startIdx, endIdx, data) {
+  if (!tempSvg) return
+  
+  const container = tempChartRef.value
+  const width = container.clientWidth
+  const height = container.clientHeight
+  const margin = { top: 10, right: 30, bottom: 25, left: 50 }
+  
+  const xScale = d3.scaleLinear()
+    .domain([24, 38])
+    .range([margin.left, width - margin.right])
+  
+  // 获取选区的经度范围
+  const startLon = data[startIdx].lon
+  const endLon = data[endIdx].lon
+  const x0 = xScale(Math.min(startLon, endLon))
+  const x1 = xScale(Math.max(startLon, endLon))
+  
+  tempSvg.select('.temp-highlight')
+    .attr('x', x0)
+    .attr('y', margin.top)
+    .attr('width', Math.max(x1 - x0, 4))
+    .attr('height', height - margin.top - margin.bottom)
+    .attr('display', 'block')
+}
+
+// 更新兵力图表高亮
+function updateTroopsChartHighlight(startIdx, endIdx, data) {
+  if (!troopsSvg) return
+  
+  const container = troopsChartRef.value
+  const width = container.clientWidth
+  const height = container.clientHeight
+  const margin = { top: 20, right: 20, bottom: 30, left: 50 }
+  
+  const xScale = d3.scaleLinear()
+    .domain([0, data.length - 1])
+    .range([margin.left, width - margin.right])
+  
+  const x0 = xScale(startIdx)
+  const x1 = xScale(endIdx)
+  
+  troopsSvg.select('.troops-highlight')
+    .attr('x', x0)
+    .attr('y', margin.top)
+    .attr('width', x1 - x0)
+    .attr('height', height - margin.top - margin.bottom)
+    .attr('display', 'block')
 }
 
 // 监听索引变化
@@ -744,6 +1105,73 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   padding: 10px;
+}
+
+/* 选区统计样式 */
+.selection-stats {
+  background: rgba(212, 163, 115, 0.1);
+  border: 1px solid rgba(212, 163, 115, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.selection-stats .panel-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.clear-selection-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.6);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-selection-btn:hover {
+  border-color: #D4A373;
+  color: #D4A373;
+}
+
+.selection-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selection-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.selection-stat .label {
+  color: rgba(255,255,255,0.6);
+}
+
+.selection-stat .value {
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+
+.selection-stat .value.troops {
+  color: #D4A373;
+}
+
+.selection-stat .value.loss {
+  color: #C0392B;
+}
+
+.selection-stat .value.temp {
+  color: #4A90D9;
 }
 
 .battles-list {
@@ -959,6 +1387,26 @@ onUnmounted(() => {
   color: #C0392B;
 }
 
+.modal-detail-link {
+  display: block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #D4A373 0%, #B8956C 100%);
+  color: #1a1a1a;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.modal-detail-link:hover {
+  background: linear-gradient(135deg, #E5B484 0%, #C9A67D 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 163, 115, 0.4);
+}
+
 /* 地图标记样式 */
 :deep(.battle-marker) {
   background: transparent;
@@ -1006,5 +1454,23 @@ onUnmounted(() => {
 .battles-list::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.2);
   border-radius: 2px;
+}
+
+/* Brush样式 */
+:deep(.troops-brush .selection),
+:deep(.temp-brush .selection) {
+  fill: rgba(255, 215, 0, 0.2);
+  stroke: #FFD700;
+  stroke-width: 1;
+}
+
+:deep(.troops-brush .handle),
+:deep(.temp-brush .handle) {
+  fill: #FFD700;
+}
+
+:deep(.troops-brush .overlay),
+:deep(.temp-brush .overlay) {
+  cursor: crosshair;
 }
 </style>
