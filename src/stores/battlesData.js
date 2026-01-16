@@ -2,6 +2,12 @@
 // 数据来源: Wikipedia - List of battles of the French invasion of Russia
 // 根据详细历史资料补充完善
 
+// 获取图片路径的辅助函数
+const getImagePath = (filename) => {
+  const base = import.meta.env.BASE_URL || '/'
+  return `${base}photo/${filename}`
+}
+
 export const keyBattles = [
   // ==================== 进攻阶段 ====================
   {
@@ -12,7 +18,7 @@ export const keyBattles = [
     location: { lat: 54.9, lon: 24.0 },
     type: 'start',
     phase: 'advance',
-    image: '/photo/image-1.png',
+    image: getImagePath('image-1.png'),
     overview: '1812年6月24日，多国大军的第一波渡过涅曼河，标志着华沙公国进入俄罗斯。拿破仑通过大规模强行行军，迅速率领近五十万人的军队穿越西俄，涵盖今白俄罗斯，试图瓦解由巴克莱·德·托利和彼得·巴格拉季昂领导的分散俄军。',
     stats: {
       frenchTroops: 422000,
@@ -44,7 +50,7 @@ export const keyBattles = [
     location: { lat: 54.5, lon: 25.5 },
     type: 'city',
     phase: 'advance',
-    image: '/photo/image-2.png',
+    image: getImagePath('image-2.png'),
     overview: '自4月底起，俄军总部设在维尔纽斯，但6月24日，信使紧急将涅曼河渡河消息传给巴克莱·德·托利。亚历山大于6月26日离开维尔纳，巴克莱接任总指挥。拿破仑于6月28日抵达维尔纽斯，仅发生轻微小规模冲突。',
     stats: {
       frenchTroops: 392000,
@@ -79,7 +85,7 @@ export const keyBattles = [
     location: { lat: 55.1, lon: 29.0 },
     type: 'battle',
     phase: 'advance',
-    image: '/photo/image-3.png',
+    image: getImagePath('image-3.png'),
     overview: '1812年6月底俄军战役开始后，拿破仑一世皇帝率领大军发动了一系列包抄行动。随后拿破仑发动进攻，目标是维捷布斯克，试图将俄军主力转向巴克莱·德·托利指挥。7月25日在奥斯特罗夫诺附近爆发了首次重大交战。',
     stats: {
       frenchTroops: 22000,
@@ -113,7 +119,7 @@ export const keyBattles = [
     location: { lat: 55.2, lon: 30.0 },
     type: 'battle',
     phase: 'advance',
-    image: '/photo/image-4.png',
+    image: getImagePath('image-4.png'),
     overview: '维捷布斯克战役是发生在1812年7月26日至27日法国入侵俄罗斯期间的一场军事冲突。这场战役使法国军队在拿破仑一世皇帝指挥下，与俄军后卫部队在彼得·科诺夫尼琴将军和彼得·冯·德·帕伦将军指挥下交战，最终俄军战略性撤退离开战场。',
     stats: {
       frenchTroops: 130000,
@@ -148,7 +154,7 @@ export const keyBattles = [
     location: { lat: 54.8, lon: 32.0 },
     type: 'siege',
     phase: 'advance',
-    image: '/photo/image-5.png',
+    image: getImagePath('image-5.png'),
     overview: '斯摩棱斯克战役是法国入侵俄罗斯的第一次重大战役。战斗发生在1812年8月16日至18日，涉及拿破仑一世皇帝率领的约4.5万大军团士兵对阵巴克莱·德·托利将军率领的约3万俄罗斯军队。法国炮火将城市夷为平地。在2,250座建筑中，84%被毁。',
     stats: {
       frenchTroops: 180000,
@@ -186,7 +192,7 @@ export const keyBattles = [
     location: { lat: 54.9, lon: 33.2 },
     type: 'battle',
     phase: 'advance',
-    image: '/photo/image-6.png',
+    image: getImagePath('image-6.png'),
     overview: '瓦卢蒂诺战役（也称为卢比诺战役）于1812年8月19日在瓦卢蒂诺和卢比诺附近爆发，交战双方为由内伊元帅率领的法国及盟军军团约35,000人，以及巴克莱·德·托利将军约25,000人的俄罗斯军队的强大后卫。',
     stats: {
       frenchTroops: 35000,
@@ -221,7 +227,7 @@ export const keyBattles = [
     location: { lat: 55.4, lon: 35.5 },
     type: 'battle',
     phase: 'advance',
-    image: '/photo/image-7.png',
+    image: getImagePath('image-7.png'),
     overview: '舍瓦尔季诺战役发生于1812年9月5日，交战双方为法俄军队，法军获胜。最初的俄军阵地位于新建的斯摩棱斯克公路以南，其左侧由一座建在谢瓦尔迪诺村附近土丘上的五边形土堡垒作为锚点。',
     stats: {
       frenchTroops: 30000,
@@ -253,7 +259,7 @@ export const keyBattles = [
     location: { lat: 55.5, lon: 35.8 },
     type: 'major_battle',
     phase: 'advance',
-    image: '/photo/image-8.png',
+    image: getImagePath('image-8.png'),
     overview: '博罗金诺战役发生在1812年9月7日，拿破仑入侵俄罗斯期间，地点靠近莫斯科郊外的博罗季诺村。大约有25万士兵参与了这场战斗，这是拿破仑战争中最血腥的一天。战斗中，多达50名法国将军和元帅阵亡或受伤，另有29名俄军将军。',
     stats: {
       frenchTroops: 135000,
@@ -297,7 +303,7 @@ export const keyBattles = [
     location: { lat: 55.8, lon: 37.6 },
     type: 'city',
     phase: 'advance',
-    image: '/photo/image-9.png',
+    image: getImagePath('image-9.png'),
     overview: '拿破仑战争期间，法国皇帝拿破仑·波拿巴的"大军团"于1812年9月14日至10月19日占领了莫斯科。这标志着法国入侵俄罗斯的顶峰。在持续36天的占领期间，城市被俄国农民和法国人焚毁并洗劫一空。',
     stats: {
       frenchTroops: 100000,
@@ -340,7 +346,7 @@ export const keyBattles = [
     location: { lat: 55.0, lon: 36.5 },
     type: 'major_battle',
     phase: 'retreat',
-    image: '/photo/image-10.png',
+    image: getImagePath('image-10.png'),
     overview: '马洛亚罗斯拉维茨战役发生于1812年10月24日，是法国入侵俄罗斯的一部分。这是米哈伊尔·库图佐夫的决定性战役，迫使拿破仑向西北撤退，穿越莫扎伊斯克至斯摩棱斯克，沿着他极具破坏性的进军路线。',
     stats: {
       frenchTroops: 85000,
@@ -378,7 +384,7 @@ export const keyBattles = [
     location: { lat: 55.2, lon: 34.3 },
     type: 'battle',
     phase: 'retreat',
-    image: '/photo/image-11.png',
+    image: getImagePath('image-11.png'),
     overview: '维亚兹马战役发生在拿破仑从莫斯科撤退的初期。在这次交战中，由步兵将军米洛拉多维奇指挥的俄军部队对大军后卫造成了重大损失。尽管法国人挫败了米洛拉多维奇包围并歼灭达武元帅军团的目标，但由于俄军持续骚扰，法军在部分混乱状态下撤退。',
     stats: {
       frenchTroops: 37000,
@@ -416,7 +422,7 @@ export const keyBattles = [
     location: { lat: 54.6, lon: 32.0 },
     type: 'city',
     phase: 'retreat',
-    image: '/photo/image-12.png',
+    image: getImagePath('image-12.png'),
     overview: '拿破仑于1812年10月19日开始撤退，军队人数增至11万人。他最初打算经卡卢加撤退，绕行更肥沃的地区，但在马洛亚罗斯拉韦茨战役中遇到库图佐夫阻碍后，决定沿直线返回。1812年11月12日，在维亚兹马，拿破仑的军队已降至55,000人。',
     stats: {
       frenchTroops: 55000,
@@ -448,7 +454,7 @@ export const keyBattles = [
     location: { lat: 54.4, lon: 31.0 },
     type: 'major_battle',
     phase: 'retreat',
-    image: '/photo/image-13.png',
+    image: getImagePath('image-13.png'),
     overview: '克拉斯诺伊战役于1812年11月15日至18日展开，标志着拿破仑从莫斯科艰难撤退中的一个关键时刻。在六次小规模交火中，库图佐夫元帅率领的俄军对已因消耗战严重削弱的大军团残部造成重大打击。',
     stats: {
       frenchTroops: 55000,
@@ -486,7 +492,7 @@ export const keyBattles = [
     location: { lat: 54.4, lon: 28.3 },
     type: 'major_battle',
     phase: 'retreat',
-    image: '/photo/image-14.png',
+    image: getImagePath('image-14.png'),
     overview: '别列津纳战役发生于1812年11月26日至29日，交战双方为拿破仑的大军团与由维特根斯坦元帅和奇恰戈夫海军上将指挥的俄帝国军队。拿破仑在莫斯科占领失败后混乱撤退向波兰，试图在鲍里索夫渡过别列津纳河。',
     stats: {
       frenchTroops: 49000,
