@@ -114,7 +114,7 @@ function drawAdvanceRoute() {
   for (let i = 0; i < napoleonAdvance.length - 1; i++) {
     const start = napoleonAdvance[i]
     const end = napoleonAdvance[i + 1]
-    const width = Math.max(3, (start.survivors / maxTroops) * 20)
+    const width = Math.max(2, (start.survivors / maxTroops) * 12)
     
     const line = L.polyline(
       [[start.lat, start.lon], [end.lat, end.lon]],
@@ -198,7 +198,7 @@ function drawRetreatRoute() {
   for (let i = 0; i < napoleonRetreat.length - 1; i++) {
     const start = napoleonRetreat[i]
     const end = napoleonRetreat[i + 1]
-    const width = Math.max(2, (start.survivors / maxTroops) * 12)
+    const width = Math.max(1.5, (start.survivors / maxTroops) * 8)
     
     const line = L.polyline(
       [[start.lat, start.lon], [end.lat, end.lon]],
@@ -220,11 +220,46 @@ function drawSchwarzenberRoute() {
   
   layers.schwarzenberg = L.polyline(coords, {
     color: '#2A9D8F',
-    weight: 5,
+    weight: 3,
     opacity: 0.7,
     dashArray: '10, 5',
     lineCap: 'round'
   }).addTo(map)
+  
+  // 为施瓦岑贝格军团添加战役标记
+  const schwarzenbergBattles = [
+    { name: '因科沃战役', location: [52.5, 26.0], date: '1812年8月8日' },
+    { name: '戈罗杰奇诺战役', location: [52.2, 27.5], date: '1812年8月12日' }
+  ]
+  
+  schwarzenbergBattles.forEach(battle => {
+    const icon = L.divIcon({
+      className: 'event-marker schwarzenberg-battle',
+      html: `<span style="font-size: 18px; cursor: pointer;">⚔️</span>`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    })
+    
+    const marker = L.marker(battle.location, { icon })
+      .addTo(map)
+      .on('click', () => {
+        emit('event-click', {
+          name: battle.name,
+          date: battle.date,
+          location: battle.location,
+          type: 'battle',
+          description: `施瓦岑贝格奥地利辅助军团（约34000人）在南翼的战役。`
+        })
+      })
+    
+    marker.bindTooltip(battle.name, {
+      permanent: false,
+      direction: 'top',
+      className: 'event-tooltip'
+    })
+    
+    layers.markers.push(marker)
+  })
 }
 
 function drawCityLabels() {

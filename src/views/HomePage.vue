@@ -13,20 +13,25 @@
         </div>
 
         <div class="nav-cards">
+          <div class="nav-card featured" @click="navigateTo('/game')">
+            <span class="card-icon">🎮</span>
+            <h4>绝望的行军</h4>
+            <p>体验1812远征</p>
+          </div>
+          <div class="nav-card" @click="navigateTo('/dashboard')">
+            <span class="card-icon">📊</span>
+            <h4>单屏仪表盘</h4>
+            <p>多视图联动分析</p>
+          </div>
           <div class="nav-card" @click="navigateTo('/visualization')">
             <span class="card-icon">🗺</span>
-            <h4>战役可视化</h4>
-            <p>交互式地图分析</p>
+            <h4>滚动叙事</h4>
+            <p>交互式地图故事</p>
           </div>
           <div class="nav-card" @click="navigateTo('/reading')">
             <span class="card-icon">📖</span>
             <h4>历史档案</h4>
             <p>详细战役记录</p>
-          </div>
-          <div class="nav-card" @click="showInfo('corps')">
-            <span class="card-icon">⚔</span>
-            <h4>军团编制</h4>
-            <p>大军团组织</p>
           </div>
         </div>
 
@@ -410,6 +415,16 @@ onUnmounted(() => {
   background: rgba(184, 134, 11, 0.15);
   border-color: #B8860B;
   transform: translateY(-5px);
+}
+
+.nav-card.featured {
+  border-color: #B8860B;
+  background: rgba(184, 134, 11, 0.1);
+}
+
+.nav-card.featured:hover {
+  background: rgba(184, 134, 11, 0.25);
+  box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
 }
 
 .card-icon {
