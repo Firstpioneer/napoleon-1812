@@ -51,58 +51,68 @@
         </div>
       </main>
 
-      <!-- 右侧：战役列表 -->
-      <aside class="right-panel">
-        <!-- 选区统计信息 -->
-        <div v-if="brushSelection" class="selection-stats">
+      <!-- 右侧：战役列表（可折叠） -->
+      <aside class="right-panel" :class="{ collapsed: rightPanelCollapsed, hidden: rightPanelHidden }">
+        <!-- 折叠按钮 -->
+        <button class="panel-toggle-btn" @click="rightPanelCollapsed = !rightPanelCollapsed" v-show="!rightPanelHidden">
+          {{ toggleIcon }}
+        </button>
+        
+        <div class="panel-content" v-show="!rightPanelCollapsed && !rightPanelHidden">
+          <!-- 选区统计信息 -->
+          <div v-if="brushSelection" class="selection-stats">
+            <div class="panel-title">
+              选区统计
+              <button class="clear-selection-btn" @click="clearBrushSelection">清除</button>
+            </div>
+            <div class="selection-info">
+              <div class="selection-stat">
+                <span class="label">时间范围</span>
+                <span class="value">{{ brushSelection.startDate }} ~ {{ brushSelection.endDate }}</span>
+              </div>
+              <div class="selection-stat">
+                <span class="label">起始兵力</span>
+                <span class="value troops">{{ formatNumber(brushSelection.startTroops) }}</span>
+              </div>
+              <div class="selection-stat">
+                <span class="label">结束兵力</span>
+                <span class="value troops">{{ formatNumber(brushSelection.endTroops) }}</span>
+              </div>
+              <div class="selection-stat">
+                <span class="label">兵力损失</span>
+                <span class="value loss">-{{ formatNumber(brushSelection.startTroops - brushSelection.endTroops) }}</span>
+              </div>
+              <div class="selection-stat">
+                <span class="label">损失率</span>
+                <span class="value loss">{{ ((brushSelection.startTroops - brushSelection.endTroops) / brushSelection.startTroops * 100).toFixed(1) }}%</span>
+              </div>
+              <div class="selection-stat" v-if="brushSelection.minTemp !== null">
+                <span class="label">温度范围</span>
+                <span class="value temp">{{ brushSelection.minTemp }}°C ~ {{ brushSelection.maxTemp }}°C</span>
+              </div>
+            </div>
+          </div>
           <div class="panel-title">
-            选区统计
-            <button class="clear-selection-btn" @click="clearBrushSelection">清除</button>
+            关键战役
+            <button class="close-panel-btn" @click="rightPanelHidden = true">×</button>
           </div>
-          <div class="selection-info">
-            <div class="selection-stat">
-              <span class="label">时间范围</span>
-              <span class="value">{{ brushSelection.startDate }} ~ {{ brushSelection.endDate }}</span>
+          <div class="battles-list">
+            <div 
+              v-for="battle in keyBattlesList" 
+              :key="battle.id"
+              class="battle-item"
+              :class="{ active: selectedBattle?.id === battle.id, [battle.phase]: true }"
+              @click="selectBattle(battle)"
+              @mouseenter="highlightBattle(battle)"
+              @mouseleave="unhighlightBattle()"
+            >
+              <div class="battle-icon">{{ getBattleIcon(battle.type) }}</div>
+              <div class="battle-info">
+                <div class="battle-name">{{ battle.title }}</div>
+                <div class="battle-date">{{ battle.date }}</div>
+              </div>
+              <div class="battle-troops">{{ formatNumber(battle.stats?.frenchTroops || 0) }}</div>
             </div>
-            <div class="selection-stat">
-              <span class="label">起始兵力</span>
-              <span class="value troops">{{ formatNumber(brushSelection.startTroops) }}</span>
-            </div>
-            <div class="selection-stat">
-              <span class="label">结束兵力</span>
-              <span class="value troops">{{ formatNumber(brushSelection.endTroops) }}</span>
-            </div>
-            <div class="selection-stat">
-              <span class="label">兵力损失</span>
-              <span class="value loss">-{{ formatNumber(brushSelection.startTroops - brushSelection.endTroops) }}</span>
-            </div>
-            <div class="selection-stat">
-              <span class="label">损失率</span>
-              <span class="value loss">{{ ((brushSelection.startTroops - brushSelection.endTroops) / brushSelection.startTroops * 100).toFixed(1) }}%</span>
-            </div>
-            <div class="selection-stat" v-if="brushSelection.minTemp !== null">
-              <span class="label">温度范围</span>
-              <span class="value temp">{{ brushSelection.minTemp }}°C ~ {{ brushSelection.maxTemp }}°C</span>
-            </div>
-          </div>
-        </div>
-        <div class="panel-title">关键战役</div>
-        <div class="battles-list">
-          <div 
-            v-for="battle in keyBattlesList" 
-            :key="battle.id"
-            class="battle-item"
-            :class="{ active: selectedBattle?.id === battle.id, [battle.phase]: true }"
-            @click="selectBattle(battle)"
-            @mouseenter="highlightBattle(battle)"
-            @mouseleave="unhighlightBattle()"
-          >
-            <div class="battle-icon">{{ getBattleIcon(battle.type) }}</div>
-            <div class="battle-info">
-              <div class="battle-name">{{ battle.title }}</div>
-              <div class="battle-date">{{ battle.date }}</div>
-            </div>
-            <div class="battle-troops">{{ formatNumber(battle.stats?.frenchTroops || 0) }}</div>
           </div>
         </div>
       </aside>
@@ -182,6 +192,9 @@ const hoverInfo = ref(null)
 const highlightedPoint = ref(null)
 const brushSelection = ref(null)
 const brushRange = ref(null)
+const rightPanelCollapsed = ref(false)
+const rightPanelHidden = ref(false)
+const isMobile = ref(false)
 
 let map = null
 let routeSegments = { advance: [], retreat: [] }
@@ -190,6 +203,19 @@ let playInterval = null
 let troopsSvg = null
 let tempSvg = null
 let markers = { advance: [], retreat: [], battles: [], progressMarker: null }
+
+// 检测是否为手机端
+function checkMobile() {
+  isMobile.value = window.innerWidth <= 768
+}
+
+// 折叠按钮图标
+const toggleIcon = computed(() => {
+  if (isMobile.value) {
+    return rightPanelCollapsed.value ? '▲' : '▼'
+  }
+  return rightPanelCollapsed.value ? '◀' : '▶'
+})
 
 // 合并进攻和撤退数据形成完整时间线
 const timelineData = computed(() => {
@@ -950,6 +976,8 @@ watch(currentIndex, () => {
 })
 
 onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
   initMap()
   setTimeout(() => {
     initTroopsChart()
@@ -958,6 +986,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
   if (playInterval) clearInterval(playInterval)
   if (map) map.remove()
 })
@@ -1049,6 +1078,9 @@ onUnmounted(() => {
   margin-bottom: 10px;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .troops-chart {
@@ -1105,6 +1137,45 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   padding: 10px;
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+.right-panel.collapsed {
+  width: 40px;
+  padding: 10px 5px;
+}
+
+.panel-toggle-btn {
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 50px;
+  background: rgba(20,20,20,0.95);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px 0 0 8px;
+  color: #D4A373;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.panel-toggle-btn:hover {
+  background: rgba(212, 163, 115, 0.2);
+  border-color: #D4A373;
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 /* 选区统计样式 */
@@ -1138,6 +1209,25 @@ onUnmounted(() => {
 .clear-selection-btn:hover {
   border-color: #D4A373;
   color: #D4A373;
+}
+
+.close-panel-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.close-panel-btn:hover {
+  color: #C0392B;
+}
+
+.right-panel.hidden {
+  display: none;
 }
 
 .selection-info {
@@ -1472,5 +1562,225 @@ onUnmounted(() => {
 :deep(.troops-brush .overlay),
 :deep(.temp-brush .overlay) {
   cursor: crosshair;
+}
+
+/* 响应式 - 手机端 */
+@media (max-width: 768px) {
+  .dashboard-page {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .stats-header {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 15px;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .stat-card {
+    min-width: 55px;
+  }
+  
+  .stat-value {
+    font-size: 1rem;
+  }
+  
+  .stat-label {
+    font-size: 0.6rem;
+  }
+  
+  .nav-link {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+  
+  /* 手机端主内容区改为垂直布局 */
+  .main-content {
+    flex-direction: column;
+    flex: none;
+  }
+  
+  /* 左侧面板在手机端变为顶部横条 */
+  .left-panel {
+    width: 100%;
+    height: 120px;
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 8px;
+  }
+  
+  .left-panel .panel-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 0 5px;
+    margin: 0;
+    border-bottom: none;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .troops-chart {
+    flex: 1;
+    height: 100%;
+  }
+  
+  /* 地图容器在手机端固定高度 */
+  .map-container {
+    height: 45vh;
+    min-height: 280px;
+    flex: none;
+  }
+  
+  /* 右侧面板在手机端变为底部可折叠区域 */
+  .right-panel {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .right-panel.collapsed {
+    width: 100%;
+    height: 45px;
+    max-height: 45px;
+    padding: 5px 10px;
+  }
+  
+  .panel-toggle-btn {
+    position: absolute;
+    left: 50%;
+    top: -15px;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 25px;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.75rem;
+  }
+  
+  .right-panel.collapsed .panel-toggle-btn {
+    top: 10px;
+  }
+  
+  .panel-content {
+    padding-top: 15px;
+  }
+  
+  .right-panel .panel-title {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  
+  .battles-list {
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  
+  .battle-item {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .battle-icon {
+    font-size: 1rem;
+  }
+  
+  .battle-name {
+    font-size: 0.8rem;
+  }
+  
+  .battle-date {
+    font-size: 0.65rem;
+  }
+  
+  .battle-troops {
+    font-size: 0.75rem;
+  }
+  
+  /* 底部面板 */
+  .bottom-panel {
+    height: 110px;
+    flex-shrink: 0;
+  }
+  
+  .temp-chart {
+    padding: 0 10px;
+  }
+  
+  .timeline-control {
+    height: 38px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  
+  .control-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .timeline-date {
+    font-size: 0.7rem;
+    min-width: 70px;
+  }
+  
+  .modal-content {
+    padding: 20px;
+    margin: 15px;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.2rem;
+  }
+  
+  .modal-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  /* 选区统计在手机端 */
+  .selection-stats {
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .selection-stat {
+    font-size: 0.75rem;
+  }
+}
+
+/* 响应式 - 小手机 */
+@media (max-width: 480px) {
+  .stat-card {
+    min-width: 50px;
+  }
+  
+  .stat-value {
+    font-size: 0.9rem;
+  }
+  
+  .map-container {
+    height: 40vh;
+    min-height: 250px;
+  }
+  
+  .left-panel {
+    height: 100px;
+  }
+  
+  .right-panel {
+    max-height: 220px;
+  }
+  
+  .battles-list {
+    max-height: 150px;
+  }
 }
 </style>

@@ -107,11 +107,14 @@ function closeInfoPanel() {
 
 /* 第一屏：欢迎内容 */
 .welcome-screen {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh; /* 动态视口高度，更好支持移动端 */
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #0D0D0D 0%, #1A1510 100%);
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 
 .welcome-content {
@@ -317,24 +320,32 @@ function closeInfoPanel() {
 
 /* 响应式 */
 @media (max-width: 768px) {
+  .welcome-screen {
+    min-height: auto;
+    height: auto;
+    padding: 80px 0 40px;
+    align-items: flex-start;
+  }
+  
   .welcome-content {
     padding: 20px;
+    padding-top: 30px;
   }
   
   .hero-section {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
   
   .hero-title {
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
   
   .hero-subtitle {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
   .hero-desc {
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1.8;
   }
   
@@ -373,16 +384,28 @@ function closeInfoPanel() {
 }
 
 @media (max-width: 480px) {
+  .welcome-screen {
+    padding: 100px 0 30px;
+  }
+  
+  .welcome-content {
+    padding-top: 20px;
+  }
+  
+  .hero-section {
+    margin-bottom: 25px;
+  }
+  
   .hero-title {
     font-size: 3rem;
   }
   
   .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   
   .hero-desc {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   
   .nav-card {

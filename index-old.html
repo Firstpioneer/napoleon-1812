@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1812: Frozen Ambition - 拿破仑俄国战役可视化</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel=
+    "stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 加载画面 -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>1812: Frozen Ambition</h1>
+            <p>冻结的野心</p>
+            <div class="loading-bar"><div class="loading-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+<div id="app">
+        <!-- 顶部标题栏 -->
+        <header id="header">
+            <div class="title-section">
+                <h1>1812: Frozen Ambition</h1>
+                <p class="subtitle">拿破仑俄国战役多维可视化叙事</p>
+            </div>
+            <div class="controls">
+                <button id="btn-play" class="control-btn" title="播放/暂停">
+                    <span class="icon-play">▶</span>
+                </button>
+                <button id="btn-reset" class="control-btn" title="重置">↺</button>
+                <div class="legend-toggle">
+                    <label><input type="checkbox" id="show-napoleon" checked> 拿破仑主力</label>
+                    <label><input type="checkbox" id="show-schwarzenberg" checked> 施瓦岑贝格军团</label>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main id="main-content">
+            <!-- 左侧：地图视图 -->
+            <section id="map-container">
+                <div id="map"></div>
+                <!-- 地图图例 -->
+                <div id="map-legend">
+                    <h4>图例</h4>
+                    <div class="legend-item">
+                        <span class="legend-line advance"></span> 进攻路线
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line retreat"></span> 撤退路线
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line schwarzenberg"></span> 施瓦岑贝格军团
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-icon battle">⚔</span> 重大战役
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-icon cold">❄</span> 极寒事件
+                    </div>
+                </div>
+                <!-- 当前状态显示 -->
+                <div id="status-panel">
+                    <div class="status-item">
+                        <span class="label">日期</span>
+                        <span id="current-date" class="value">1812年6月24日</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">兵力</span>
+                        <span id="current-troops" class="value">422,000</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">温度</span>
+                        <span id="current-temp" class="value">--</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧面板 -->
+            <aside id="side-panel">
+                <!-- 叙事面板 -->
+                <div id="narrative-panel">
+                    <h3>战役进程</h3>
+                    <div id="narrative-content">
+                        <p class="phase-title">第一阶段：入侵</p>
+                        <p>1812年6月24日，拿破仑率领欧洲史上最大规模的军队——约42万人，渡过涅曼河，开始了对俄国的入侵...</p>
+                    </div>
+                </div>
+                
+                <!-- 对比图表 -->
+                <div id="comparison-panel">
+                    <h3>兵力对比</h3>
+                    <div id="butterfly-chart"></div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 底部时间轴 -->
+        <footer id="timeline-container">
+            <div id="timeline">
+                <div id="temperature-chart"></div>
+                <div id="time-axis"></div>
+                <div id="time-brush"></div>
+                <div id="event-markers"></div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 事件卡片弹窗 -->
+    <div id="event-card" class="card hidden">
+        <button class="card-close">×</button>
+        <div class="card-image"></div>
+        <div class="card-content">
+            <h3 class="card-title"></h3>
+            <p class="card-date"></p>
+            <p class="card-description"></p>
+            <div class="card-stats">
+                <div class="stat">
+                    <span class="stat-label">兵力</span>
+                    <span class="stat-value troops"></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">温度</span>
+                    <span class="stat-value temp"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入库 -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
