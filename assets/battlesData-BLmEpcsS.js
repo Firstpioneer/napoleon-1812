@@ -1,4 +1,4 @@
-const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",date:"1812年6月24日",location:{lat:54.9,lon:24},type:"start",phase:"advance",image:"/photo/image-1.png",overview:"1812年6月24日，多国大军的第一波渡过涅曼河，标志着华沙公国进入俄罗斯。拿破仑通过大规模强行行军，迅速率领近五十万人的军队穿越西俄，涵盖今白俄罗斯，试图瓦解由巴克莱·德·托利和彼得·巴格拉季昂领导的分散俄军。",stats:{frenchTroops:422e3,russianTroops:22e4,frenchCasualties:0,russianCasualties:0,temperature:"22°C"},commanders:{french:["拿破仑一世"],russian:["巴克莱·德·托利","彼得·巴格拉季昂"]},content:`
+const e=a=>`/napoleon-1812/photo/${a}`,t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",date:"1812年6月24日",location:{lat:54.9,lon:24},type:"start",phase:"advance",image:e("image-1.png"),overview:"1812年6月24日，多国大军的第一波渡过涅曼河，标志着华沙公国进入俄罗斯。拿破仑通过大规模强行行军，迅速率领近五十万人的军队穿越西俄，涵盖今白俄罗斯，试图瓦解由巴克莱·德·托利和彼得·巴格拉季昂领导的分散俄军。",stats:{frenchTroops:422e3,russianTroops:22e4,frenchCasualties:0,russianCasualties:0,temperature:"22°C"},commanders:{french:["拿破仑一世"],russian:["巴克莱·德·托利","彼得·巴格拉季昂"]},content:`
       <h3>战役背景</h3>
       <p>1812年6月24日，多国大军的第一波渡过涅曼河，标志着华沙公国进入俄罗斯。这是历史上规模最大的军事远征之一。拿破仑通过大规模强行行军，迅速率领近五十万人的军队穿越西俄，涵盖今白俄罗斯，试图瓦解由巴克莱·德·托利和彼得·巴格拉季昂领导的分散俄军，当时约有18万至22万士兵。</p>
       
@@ -7,7 +7,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>军事规模</h3>
       <p>这是欧洲有史以来组建的最大军队，包括法国军队以及来自波兰、意大利、德国、奥地利等盟国的部队。然而，庞大的军队也带来了严重的后勤问题，这将在整个战役中困扰法军。</p>
-    `},{id:"vilna",title:"占领维尔纽斯",titleEn:"Capture of Vilna",date:"1812年6月28日",location:{lat:54.5,lon:25.5},type:"city",phase:"advance",image:"/photo/image-2.png",overview:"自4月底起，俄军总部设在维尔纽斯，但6月24日，信使紧急将涅曼河渡河消息传给巴克莱·德·托利。亚历山大于6月26日离开维尔纳，巴克莱接任总指挥。拿破仑于6月28日抵达维尔纽斯，仅发生轻微小规模冲突。",stats:{frenchTroops:392e3,russianTroops:0,frenchCasualties:5e3,russianCasualties:0,temperature:"24°C"},commanders:{french:["拿破仑一世"],russian:["巴克莱·德·托利"]},content:`
+    `},{id:"vilna",title:"占领维尔纽斯",titleEn:"Capture of Vilna",date:"1812年6月28日",location:{lat:54.5,lon:25.5},type:"city",phase:"advance",image:e("image-2.png"),overview:"自4月底起，俄军总部设在维尔纽斯，但6月24日，信使紧急将涅曼河渡河消息传给巴克莱·德·托利。亚历山大于6月26日离开维尔纳，巴克莱接任总指挥。拿破仑于6月28日抵达维尔纽斯，仅发生轻微小规模冲突。",stats:{frenchTroops:392e3,russianTroops:0,frenchCasualties:5e3,russianCasualties:0,temperature:"24°C"},commanders:{french:["拿破仑一世"],russian:["巴克莱·德·托利"]},content:`
       <h3>战役经过</h3>
       <p>自4月底起，俄军总部设在维尔纽斯，但6月24日，信使紧急将涅曼河渡河消息传给巴克莱·德·托利。夜幕未过，命令巴格拉季昂和普拉托夫指挥哥萨克，发起进攻。</p>
       
@@ -19,7 +19,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>疾病爆发</h3>
       <p>渡过涅曼河几天后，一些士兵开始发高烧，身体出现红疹——伤寒出现了。6月29日至30日，一场猛烈的雷暴在夜间袭击立陶宛，持续数小时。结果对法军来说极为惨重，部队的流动受到阻碍甚至完全受阻。</p>
-    `},{id:"ostrovno",title:"奥斯特罗夫诺战役",titleEn:"Battle of Ostrovno",date:"1812年7月25-26日",location:{lat:55.1,lon:29},type:"battle",phase:"advance",image:"/photo/image-3.png",overview:"1812年6月底俄军战役开始后，拿破仑一世皇帝率领大军发动了一系列包抄行动。随后拿破仑发动进攻，目标是维捷布斯克，试图将俄军主力转向巴克莱·德·托利指挥。7月25日在奥斯特罗夫诺附近爆发了首次重大交战。",stats:{frenchTroops:22e3,russianTroops:16e3,frenchCasualties:3e3,russianCasualties:2500,temperature:"27°C"},commanders:{french:["缪拉元帅","南苏蒂将军","欧仁亲王"],russian:["奥斯特尔曼-托尔斯泰伯爵"]},content:`
+    `},{id:"ostrovno",title:"奥斯特罗夫诺战役",titleEn:"Battle of Ostrovno",date:"1812年7月25-26日",location:{lat:55.1,lon:29},type:"battle",phase:"advance",image:e("image-3.png"),overview:"1812年6月底俄军战役开始后，拿破仑一世皇帝率领大军发动了一系列包抄行动。随后拿破仑发动进攻，目标是维捷布斯克，试图将俄军主力转向巴克莱·德·托利指挥。7月25日在奥斯特罗夫诺附近爆发了首次重大交战。",stats:{frenchTroops:22e3,russianTroops:16e3,frenchCasualties:3e3,russianCasualties:2500,temperature:"27°C"},commanders:{french:["缪拉元帅","南苏蒂将军","欧仁亲王"],russian:["奥斯特尔曼-托尔斯泰伯爵"]},content:`
       <h3>战役背景</h3>
       <p>1812年6月底俄军战役开始后，拿破仑一世皇帝率领大军发动了一系列包抄行动。拿破仑在维尔纳的首次此类机动在未发生交战的情况下，面对俄国帝国军队的挑战而失败。随后拿破仑发动了第二次类似的进攻，目标是维捷布斯克。</p>
       
@@ -30,7 +30,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>战役结果</h3>
       <p>俄军选择撤离战场。尽管穆拉特夸张地报告称敌军伤亡4000至5000人，俄军第四军团实际损失约2500人。法国总损失估计为3000人。此外，法国将军鲁塞尔被一名法国哨兵误杀，哨兵误以为他是俄罗斯士兵。</p>
-    `},{id:"vitebsk",title:"维捷布斯克战役",titleEn:"Battle of Vitebsk",date:"1812年7月26-27日",location:{lat:55.2,lon:30},type:"battle",phase:"advance",image:"/photo/image-4.png",overview:"维捷布斯克战役是发生在1812年7月26日至27日法国入侵俄罗斯期间的一场军事冲突。这场战役使法国军队在拿破仑一世皇帝指挥下，与俄军后卫部队在彼得·科诺夫尼琴将军和彼得·冯·德·帕伦将军指挥下交战，最终俄军战略性撤退离开战场。",stats:{frenchTroops:13e4,russianTroops:8e4,frenchCasualties:3700,russianCasualties:3e3,temperature:"25°C"},commanders:{french:["拿破仑一世","缪拉元帅","欧仁亲王"],russian:["巴克莱·德·托利","科诺夫尼琴将军","帕伦将军"]},content:`
+    `},{id:"vitebsk",title:"维捷布斯克战役",titleEn:"Battle of Vitebsk",date:"1812年7月26-27日",location:{lat:55.2,lon:30},type:"battle",phase:"advance",image:e("image-4.png"),overview:"维捷布斯克战役是发生在1812年7月26日至27日法国入侵俄罗斯期间的一场军事冲突。这场战役使法国军队在拿破仑一世皇帝指挥下，与俄军后卫部队在彼得·科诺夫尼琴将军和彼得·冯·德·帕伦将军指挥下交战，最终俄军战略性撤退离开战场。",stats:{frenchTroops:13e4,russianTroops:8e4,frenchCasualties:3700,russianCasualties:3e3,temperature:"25°C"},commanders:{french:["拿破仑一世","缪拉元帅","欧仁亲王"],russian:["巴克莱·德·托利","科诺夫尼琴将军","帕伦将军"]},content:`
       <h3>战役背景</h3>
       <p>战斗发生时，拿破仑正试图包围维捷布斯克的俄军第一军，迫使他们接受战斗。俄国第一军司令迈克尔·安德烈亚斯·巴克莱·德·托利将军也打算参战，因此将大部分兵力集中在维捷布斯克，尽管他知道自己战胜拿破仑的机会不大。</p>
       
@@ -42,7 +42,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>俄军撤退</h3>
       <p>拿破仑并不知道，俄军在下午和夜间撤退，这意味着皇帝发动大规模战役的计划破产。与此同时，俄军匆忙撤退，安全抵达斯摩棱斯克，并按计划与巴格拉季昂会合。法国历史学家常将这场战役视为拿破仑错失良机，因为他未能强攻帕伦，从而使俄军撤退变得困难。</p>
-    `},{id:"smolensk",title:"斯摩棱斯克战役",titleEn:"Battle of Smolensk",date:"1812年8月16-18日",location:{lat:54.8,lon:32},type:"siege",phase:"advance",image:"/photo/image-5.png",overview:"斯摩棱斯克战役是法国入侵俄罗斯的第一次重大战役。战斗发生在1812年8月16日至18日，涉及拿破仑一世皇帝率领的约4.5万大军团士兵对阵巴克莱·德·托利将军率领的约3万俄罗斯军队。法国炮火将城市夷为平地。在2,250座建筑中，84%被毁。",stats:{frenchTroops:18e4,russianTroops:12e4,frenchCasualties:1e4,russianCasualties:12e3,temperature:"28°C"},commanders:{french:["拿破仑一世","波尼亚托夫斯基亲王","达武元帅","内伊元帅"],russian:["巴克莱·德·托利","巴格拉季昂亲王","多赫图罗夫将军"]},content:`
+    `},{id:"smolensk",title:"斯摩棱斯克战役",titleEn:"Battle of Smolensk",date:"1812年8月16-18日",location:{lat:54.8,lon:32},type:"siege",phase:"advance",image:e("image-5.png"),overview:"斯摩棱斯克战役是法国入侵俄罗斯的第一次重大战役。战斗发生在1812年8月16日至18日，涉及拿破仑一世皇帝率领的约4.5万大军团士兵对阵巴克莱·德·托利将军率领的约3万俄罗斯军队。法国炮火将城市夷为平地。在2,250座建筑中，84%被毁。",stats:{frenchTroops:18e4,russianTroops:12e4,frenchCasualties:1e4,russianCasualties:12e3,temperature:"28°C"},commanders:{french:["拿破仑一世","波尼亚托夫斯基亲王","达武元帅","内伊元帅"],russian:["巴克莱·德·托利","巴格拉季昂亲王","多赫图罗夫将军"]},content:`
       <h3>战役背景</h3>
       <p>斯摩棱斯克战役是法国入侵俄罗斯的第一次重大战役。拿破仑预期俄军会在斯摩棱斯克外面交战，以保护城市免受潜在破坏。然而，到8月16日，法军遇到了一座由巴格拉季昂部队防守的重兵把守城市。</p>
       
@@ -57,7 +57,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>伤亡统计</h3>
       <p>巴克莱·德·托利宣称俄军伤亡4000人，但实际可能高达10000-14000人。法国军队阵亡700人，伤亡3100至3200人，但实际损失可能达到10000人。</p>
-    `},{id:"valutino",title:"瓦卢蒂诺战役",titleEn:"Battle of Valutino",date:"1812年8月19日",location:{lat:54.9,lon:33.2},type:"battle",phase:"advance",image:"/photo/image-6.png",overview:"瓦卢蒂诺战役（也称为卢比诺战役）于1812年8月19日在瓦卢蒂诺和卢比诺附近爆发，交战双方为由内伊元帅率领的法国及盟军军团约35,000人，以及巴克莱·德·托利将军约25,000人的俄罗斯军队的强大后卫。",stats:{frenchTroops:35e3,russianTroops:25e3,frenchCasualties:8e3,russianCasualties:6e3,temperature:"26°C"},commanders:{french:["内伊元帅","缪拉元帅","朱诺将军"],russian:["巴克莱·德·托利","图奇科夫将军"]},content:`
+    `},{id:"valutino",title:"瓦卢蒂诺战役",titleEn:"Battle of Valutino",date:"1812年8月19日",location:{lat:54.9,lon:33.2},type:"battle",phase:"advance",image:e("image-6.png"),overview:"瓦卢蒂诺战役（也称为卢比诺战役）于1812年8月19日在瓦卢蒂诺和卢比诺附近爆发，交战双方为由内伊元帅率领的法国及盟军军团约35,000人，以及巴克莱·德·托利将军约25,000人的俄罗斯军队的强大后卫。",stats:{frenchTroops:35e3,russianTroops:25e3,frenchCasualties:8e3,russianCasualties:6e3,temperature:"26°C"},commanders:{french:["内伊元帅","缪拉元帅","朱诺将军"],russian:["巴克莱·德·托利","图奇科夫将军"]},content:`
       <h3>战役背景</h3>
       <p>拿破仑试图困住巴克莱将军军队的希望破灭，因为他发现等待法军的俄军是图奇科夫将军的后卫部队。巴克莱的主力部队由三个步兵军团和一个骑兵军团组成，分散在斯摩棱斯克附近，试图在斯摩棱斯克战役后脱离法军。</p>
       
@@ -69,7 +69,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>战役结果</h3>
       <p>法国方面伤亡约7,000至8,800人。俄军损失约6000人。战后拿破仑勃然大怒，意识到另一个困住并摧毁俄军的好机会已经错失。</p>
-    `},{id:"shevardino",title:"舍瓦尔季诺战役",titleEn:"Battle of Shevardino",date:"1812年9月5日",location:{lat:55.4,lon:35.5},type:"battle",phase:"advance",image:"/photo/image-7.png",overview:"舍瓦尔季诺战役发生于1812年9月5日，交战双方为法俄军队，法军获胜。最初的俄军阵地位于新建的斯摩棱斯克公路以南，其左侧由一座建在谢瓦尔迪诺村附近土丘上的五边形土堡垒作为锚点。",stats:{frenchTroops:3e4,russianTroops:12e3,frenchCasualties:5e3,russianCasualties:6e3,temperature:"18°C"},commanders:{french:["穆拉元帅","波尼亚托夫斯基亲王","达武元帅"],russian:["戈尔恰科夫亲王","巴格拉季昂亲王"]},content:`
+    `},{id:"shevardino",title:"舍瓦尔季诺战役",titleEn:"Battle of Shevardino",date:"1812年9月5日",location:{lat:55.4,lon:35.5},type:"battle",phase:"advance",image:e("image-7.png"),overview:"舍瓦尔季诺战役发生于1812年9月5日，交战双方为法俄军队，法军获胜。最初的俄军阵地位于新建的斯摩棱斯克公路以南，其左侧由一座建在谢瓦尔迪诺村附近土丘上的五边形土堡垒作为锚点。",stats:{frenchTroops:3e4,russianTroops:12e3,frenchCasualties:5e3,russianCasualties:6e3,temperature:"18°C"},commanders:{french:["穆拉元帅","波尼亚托夫斯基亲王","达武元帅"],russian:["戈尔恰科夫亲王","巴格拉季昂亲王"]},content:`
       <h3>战役背景</h3>
       <p>舍瓦尔季诺堡垒由戈尔恰科夫亲王的部队防守，隶属于彼得·巴格拉季昂的第二西方军。库图佐夫表示，这座防御工事的驻守仅是为了拖延法军的推进。</p>
       
@@ -78,7 +78,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>伤亡与结果</h3>
       <p>法国赢得了战斗，付出了4000名法军和6000名俄军伤亡的代价。法军从西侧意外推进及舍瓦尔季诺堡垒的失守使俄军阵型陷入混乱。由于防线左翼崩溃，俄军向东撤退，在乌蒂察村周围建立临时阵地。因此，俄军阵地的左翼正处于侧翼攻击的成熟时机。博罗金诺战役将在两天后爆发。</p>
-    `},{id:"borodino",title:"博罗季诺战役",titleEn:"Battle of Borodino",date:"1812年9月7日",location:{lat:55.5,lon:35.8},type:"major_battle",phase:"advance",image:"/photo/image-8.png",overview:"博罗金诺战役发生在1812年9月7日，拿破仑入侵俄罗斯期间，地点靠近莫斯科郊外的博罗季诺村。大约有25万士兵参与了这场战斗，这是拿破仑战争中最血腥的一天。战斗中，多达50名法国将军和元帅阵亡或受伤，另有29名俄军将军。",stats:{frenchTroops:135e3,russianTroops:12e4,frenchCasualties:35e3,russianCasualties:45e3,temperature:"18°C"},commanders:{french:["拿破仑一世","缪拉元帅","达武元帅","内伊元帅","欧仁亲王"],russian:["库图佐夫元帅","巴克莱·德·托利","巴格拉季昂亲王"]},content:`
+    `},{id:"borodino",title:"博罗季诺战役",titleEn:"Battle of Borodino",date:"1812年9月7日",location:{lat:55.5,lon:35.8},type:"major_battle",phase:"advance",image:e("image-8.png"),overview:"博罗金诺战役发生在1812年9月7日，拿破仑入侵俄罗斯期间，地点靠近莫斯科郊外的博罗季诺村。大约有25万士兵参与了这场战斗，这是拿破仑战争中最血腥的一天。战斗中，多达50名法国将军和元帅阵亡或受伤，另有29名俄军将军。",stats:{frenchTroops:135e3,russianTroops:12e4,frenchCasualties:35e3,russianCasualties:45e3,temperature:"18°C"},commanders:{french:["拿破仑一世","缪拉元帅","达武元帅","内伊元帅","欧仁亲王"],russian:["库图佐夫元帅","巴克莱·德·托利","巴格拉季昂亲王"]},content:`
       <h3>战役背景</h3>
       <p>在斯摩棱斯克战役中俄军撤退后，通往莫斯科的道路变得畅通。拿破仑与米哈伊尔·库图佐夫将军作战，库图佐夫是亚历山大一世皇帝于8月29日任命他接替巴克莱·德·托利的将军。库图佐夫的军队在博罗季诺村附近建立了防线，通过土方工事加固防线，包括位于防线中右侧的拉耶夫斯基堡垒和左翼三座巴格拉季昂堡垒。</p>
       
@@ -99,7 +99,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>历史评价</h3>
       <p>拿破仑本人总结了这场战役及其模糊的结果，写道："法国人证明了自己配得上胜利，而俄罗斯人则证明了不可战胜。"</p>
-    `},{id:"moscow",title:"占领莫斯科",titleEn:"Occupation of Moscow",date:"1812年9月14日-10月19日",location:{lat:55.8,lon:37.6},type:"city",phase:"advance",image:"/photo/image-9.png",overview:'拿破仑战争期间，法国皇帝拿破仑·波拿巴的"大军团"于1812年9月14日至10月19日占领了莫斯科。这标志着法国入侵俄罗斯的顶峰。在持续36天的占领期间，城市被俄国农民和法国人焚毁并洗劫一空。',stats:{frenchTroops:1e5,russianTroops:0,frenchCasualties:0,russianCasualties:0,temperature:"10°C → 0°C"},commanders:{french:["拿破仑一世","莫蒂耶元帅"],russian:["库图佐夫元帅","罗斯托普钦伯爵"]},content:`
+    `},{id:"moscow",title:"占领莫斯科",titleEn:"Occupation of Moscow",date:"1812年9月14日-10月19日",location:{lat:55.8,lon:37.6},type:"city",phase:"advance",image:e("image-9.png"),overview:'拿破仑战争期间，法国皇帝拿破仑·波拿巴的"大军团"于1812年9月14日至10月19日占领了莫斯科。这标志着法国入侵俄罗斯的顶峰。在持续36天的占领期间，城市被俄国农民和法国人焚毁并洗劫一空。',stats:{frenchTroops:1e5,russianTroops:0,frenchCasualties:0,russianCasualties:0,temperature:"10°C → 0°C"},commanders:{french:["拿破仑一世","莫蒂耶元帅"],russian:["库图佐夫元帅","罗斯托普钦伯爵"]},content:`
       <h3>进入莫斯科</h3>
       <p>法国军队于9月14日下午开始进入莫斯科。令拿破仑惊讶的是，库图佐夫已经放弃了城市，城市未抵抗便沦陷。数十万平民随撤退的俄军逃离，城市几乎空无一人。攻占该城对法国人来说是一场空洞的胜利。</p>
       
@@ -117,7 +117,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>开始撤退</h3>
       <p>10月19日，在塔鲁蒂诺战役失利后，拿破仑及其大军因消耗战逐渐削弱，缺乏补给，且面临初雪，自愿放弃城市。法军开始了灾难性的撤退。</p>
-    `},{id:"maloyaroslavets",title:"小雅罗斯拉韦茨战役",titleEn:"Battle of Maloyaroslavets",date:"1812年10月24日",location:{lat:55,lon:36.5},type:"major_battle",phase:"retreat",image:"/photo/image-10.png",overview:"马洛亚罗斯拉维茨战役发生于1812年10月24日，是法国入侵俄罗斯的一部分。这是米哈伊尔·库图佐夫的决定性战役，迫使拿破仑向西北撤退，穿越莫扎伊斯克至斯摩棱斯克，沿着他极具破坏性的进军路线。",stats:{frenchTroops:85e3,russianTroops:9e4,frenchCasualties:8e3,russianCasualties:6e3,temperature:"5°C"},commanders:{french:["拿破仑一世","欧仁亲王","德尔宗斯将军"],russian:["库图佐夫元帅","多赫图罗夫将军","拉耶夫斯基将军"]},content:`
+    `},{id:"maloyaroslavets",title:"小雅罗斯拉韦茨战役",titleEn:"Battle of Maloyaroslavets",date:"1812年10月24日",location:{lat:55,lon:36.5},type:"major_battle",phase:"retreat",image:e("image-10.png"),overview:"马洛亚罗斯拉维茨战役发生于1812年10月24日，是法国入侵俄罗斯的一部分。这是米哈伊尔·库图佐夫的决定性战役，迫使拿破仑向西北撤退，穿越莫扎伊斯克至斯摩棱斯克，沿着他极具破坏性的进军路线。",stats:{frenchTroops:85e3,russianTroops:9e4,frenchCasualties:8e3,russianCasualties:6e3,temperature:"5°C"},commanders:{french:["拿破仑一世","欧仁亲王","德尔宗斯将军"],russian:["库图佐夫元帅","多赫图罗夫将军","拉耶夫斯基将军"]},content:`
       <h3>战役背景</h3>
       <p>1812年10月19日，拿破仑从莫斯科撤退，向西南进军卡卢加，欧仁·德·博阿尔内率军。威尔逊估计，离开莫斯科的法军有9万有效步兵，1.4万弱骑兵，以及超过2万名非战斗人员、病人和伤员。</p>
       
@@ -132,7 +132,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>拿破仑险被俘</h3>
       <p>25日黎明时分，拿破仑差点被一支哥萨克团抓住，幸亏被一支掷弹兵军团救下。从那时起，拿破仑脖子上挂着一袋致命毒药。</p>
-    `},{id:"vyazma",title:"维亚济马战役",titleEn:"Battle of Vyazma",date:"1812年11月3日",location:{lat:55.2,lon:34.3},type:"battle",phase:"retreat",image:"/photo/image-11.png",overview:"维亚兹马战役发生在拿破仑从莫斯科撤退的初期。在这次交战中，由步兵将军米洛拉多维奇指挥的俄军部队对大军后卫造成了重大损失。尽管法国人挫败了米洛拉多维奇包围并歼灭达武元帅军团的目标，但由于俄军持续骚扰，法军在部分混乱状态下撤退。",stats:{frenchTroops:37e3,russianTroops:25e3,frenchCasualties:8e3,russianCasualties:1800,temperature:"-5°C"},commanders:{french:["达武元帅","内伊元帅","欧仁亲王","波尼亚托夫斯基亲王"],russian:["米洛拉多维奇将军","普拉托夫将军"]},content:`
+    `},{id:"vyazma",title:"维亚济马战役",titleEn:"Battle of Vyazma",date:"1812年11月3日",location:{lat:55.2,lon:34.3},type:"battle",phase:"retreat",image:e("image-11.png"),overview:"维亚兹马战役发生在拿破仑从莫斯科撤退的初期。在这次交战中，由步兵将军米洛拉多维奇指挥的俄军部队对大军后卫造成了重大损失。尽管法国人挫败了米洛拉多维奇包围并歼灭达武元帅军团的目标，但由于俄军持续骚扰，法军在部分混乱状态下撤退。",stats:{frenchTroops:37e3,russianTroops:25e3,frenchCasualties:8e3,russianCasualties:1800,temperature:"-5°C"},commanders:{french:["达武元帅","内伊元帅","欧仁亲王","波尼亚托夫斯基亲王"],russian:["米洛拉多维奇将军","普拉托夫将军"]},content:`
       <h3>战役背景</h3>
       <p>到11月3日，即维亚兹马战斗当天，撤退中的大军团已排成60英里长的纵队。纵队前头是朱诺的第八军团，驻扎在多罗戈布日，达武的第一军团作为军队的后卫，位于维亚兹马以东的军队尾部。法军撤退处不断遭受哥萨克袭击，尤其是达武的军团遭到俄军的围困。</p>
       
@@ -147,7 +147,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>战役意义</h3>
       <p>维亚兹马战役代表了大军团后卫的失败。俄军进攻的冲击使许多法军部队陷入混乱，由于撤退速度过快，内部秩序始终未能恢复。这些被遗弃、混乱的部队在接下来的几天里成为哥萨克袭击的易受攻击目标。</p>
-    `},{id:"smolensk_retreat",title:"返回斯摩棱斯克",titleEn:"Return to Smolensk",date:"1812年11月9日",location:{lat:54.6,lon:32},type:"city",phase:"retreat",image:"/photo/image-12.png",overview:"拿破仑于1812年10月19日开始撤退，军队人数增至11万人。他最初打算经卡卢加撤退，绕行更肥沃的地区，但在马洛亚罗斯拉韦茨战役中遇到库图佐夫阻碍后，决定沿直线返回。1812年11月12日，在维亚兹马，拿破仑的军队已降至55,000人。",stats:{frenchTroops:55e3,russianTroops:0,frenchCasualties:0,russianCasualties:0,temperature:"-11°C"},commanders:{french:["拿破仑一世"],russian:[]},content:`
+    `},{id:"smolensk_retreat",title:"返回斯摩棱斯克",titleEn:"Return to Smolensk",date:"1812年11月9日",location:{lat:54.6,lon:32},type:"city",phase:"retreat",image:e("image-12.png"),overview:"拿破仑于1812年10月19日开始撤退，军队人数增至11万人。他最初打算经卡卢加撤退，绕行更肥沃的地区，但在马洛亚罗斯拉韦茨战役中遇到库图佐夫阻碍后，决定沿直线返回。1812年11月12日，在维亚兹马，拿破仑的军队已降至55,000人。",stats:{frenchTroops:55e3,russianTroops:0,frenchCasualties:0,russianCasualties:0,temperature:"-11°C"},commanders:{french:["拿破仑一世"],russian:[]},content:`
       <h3>灾难性的行军</h3>
       <p>直到11月6日，第一场暴风雪席卷了军队，随后交替出现解冻和霜冻，直到12月初，严寒袭来。因此，拿破仑的大部分损失都发生在第一场降雪之前。离开斯摩棱斯克时，斯摩棱斯克在8月被蹂躏，几乎断绝补给，法军在克拉斯诺耶发现库图佐夫威胁他们的前路。</p>
       
@@ -156,7 +156,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>军队崩溃</h3>
       <p>此时的大军团已不再是一支有组织的军队，而是一群为生存而挣扎的人。纪律开始崩溃，士兵们为了食物和取暖的衣物互相争夺。</p>
-    `},{id:"krasnoi2",title:"第二次克拉斯诺耶战役",titleEn:"Second Battle of Krasnoi",date:"1812年11月15-18日",location:{lat:54.4,lon:31},type:"major_battle",phase:"retreat",image:"/photo/image-13.png",overview:"克拉斯诺伊战役于1812年11月15日至18日展开，标志着拿破仑从莫斯科艰难撤退中的一个关键时刻。在六次小规模交火中，库图佐夫元帅率领的俄军对已因消耗战严重削弱的大军团残部造成重大打击。",stats:{frenchTroops:55e3,russianTroops:8e4,frenchCasualties:26e3,russianCasualties:5e3,temperature:"-15°C"},commanders:{french:["拿破仑一世","内伊元帅","达武元帅","欧仁亲王"],russian:["库图佐夫元帅","米洛拉多维奇将军","托尔马索夫将军"]},content:`
+    `},{id:"krasnoi2",title:"第二次克拉斯诺耶战役",titleEn:"Second Battle of Krasnoi",date:"1812年11月15-18日",location:{lat:54.4,lon:31},type:"major_battle",phase:"retreat",image:e("image-13.png"),overview:"克拉斯诺伊战役于1812年11月15日至18日展开，标志着拿破仑从莫斯科艰难撤退中的一个关键时刻。在六次小规模交火中，库图佐夫元帅率领的俄军对已因消耗战严重削弱的大军团残部造成重大打击。",stats:{frenchTroops:55e3,russianTroops:8e4,frenchCasualties:26e3,russianCasualties:5e3,temperature:"-15°C"},commanders:{french:["拿破仑一世","内伊元帅","达武元帅","欧仁亲王"],russian:["库图佐夫元帅","米洛拉多维奇将军","托尔马索夫将军"]},content:`
       <h3>战役背景</h3>
       <p>过去两周失去与库图佐夫联系后，拿破仑误以为俄军因恶劣条件同样损失惨重，落后了几天。拿破仑低估了库图佐夫领导的进攻潜力，犯下了战术失误，选择继续撤退。他连续四天派出大军团从斯摩棱斯克出发，导致一支支离破碎的军团纵队，长达50公里，准备不足以应对一场重要的战斗。</p>
       
@@ -171,7 +171,7 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>"最勇敢者中的勇者"</h3>
       <p>接下来的两天里，内伊英勇的部队沿河向西行进90公里，穿越沼泽和森林，抵御哥萨克的进攻，寻找法军。11月20日凌晨三点，内伊和博阿尔内在奥尔沙附近重聚，这一事件振奋了士气低落的法军士气，带来如同胜利般的情感振奋。内伊坚定不移的勇气为拿破仑本人赢得了"最勇敢者中的勇者"的称号。</p>
-    `},{id:"berezina",title:"别列津纳河战役",titleEn:"Battle of Berezina",date:"1812年11月26-29日",location:{lat:54.4,lon:28.3},type:"major_battle",phase:"retreat",image:"/photo/image-14.png",overview:"别列津纳战役发生于1812年11月26日至29日，交战双方为拿破仑的大军团与由维特根斯坦元帅和奇恰戈夫海军上将指挥的俄帝国军队。拿破仑在莫斯科占领失败后混乱撤退向波兰，试图在鲍里索夫渡过别列津纳河。",stats:{frenchTroops:49e3,russianTroops:1e5,frenchCasualties:5e4,russianCasualties:2e4,temperature:"-25°C"},commanders:{french:["拿破仑一世","乌迪诺元帅","维克多元帅","内伊元帅","埃布莱将军"],russian:["维特根施泰因将军","奇恰戈夫海军上将","库图佐夫元帅"]},content:`
+    `},{id:"berezina",title:"别列津纳河战役",titleEn:"Battle of Berezina",date:"1812年11月26-29日",location:{lat:54.4,lon:28.3},type:"major_battle",phase:"retreat",image:e("image-14.png"),overview:"别列津纳战役发生于1812年11月26日至29日，交战双方为拿破仑的大军团与由维特根斯坦元帅和奇恰戈夫海军上将指挥的俄帝国军队。拿破仑在莫斯科占领失败后混乱撤退向波兰，试图在鲍里索夫渡过别列津纳河。",stats:{frenchTroops:49e3,russianTroops:1e5,frenchCasualties:5e4,russianCasualties:2e4,temperature:"-25°C"},commanders:{french:["拿破仑一世","乌迪诺元帅","维克多元帅","内伊元帅","埃布莱将军"],russian:["维特根施泰因将军","奇恰戈夫海军上将","库图佐夫元帅"]},content:`
       <h3>战役背景</h3>
       <p>拿破仑曾在马洛亚罗斯拉韦茨、维亚兹马和克拉斯诺伊战役中突围出境。他的计划是在白俄罗斯总督辖区的鲍里索夫渡过别列津纳河。然而，11月21日，俄军袭击并占领了鲍里索夫的法军驻军，包括别列津纳河上的桥梁。在北方，俄罗斯元帅维特根斯坦率领3万大军追踪拿破仑。从西侧明斯克出发，俄罗斯海军上将奇恰戈夫率领3.5万大军向鲍里索夫推进。</p>
       
@@ -207,4 +207,4 @@ const t=[{id:"crossing",title:"渡过涅曼河",titleEn:"Crossing the Neman",dat
       
       <h3>历史影响</h3>
       <p>这场战役的失败鼓励了其他欧洲强国组建第六次反法同盟对抗拿破仑。俄国战役成为拿破仑帝国衰落的转折点，最终导致1814年拿破仑第一次退位。</p>
-    `}];t.map(e=>({id:e.id,name:e.title,lat:e.location.lat,lon:e.location.lon,date:e.date,type:e.type,phase:e.phase}));export{t as k};
+    `}];t.map(a=>({id:a.id,name:a.title,lat:a.location.lat,lon:a.location.lon,date:a.date,type:a.type,phase:a.phase}));export{t as k};
