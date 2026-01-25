@@ -2,31 +2,26 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main]   # 你的默认分支名
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      # 1. 干净重装依赖
+      - run: npm ci
 
-      - name: Build
-      - run: chmod +x node_modules/.bin/*
-        run: npx vite build
+      # 2. 用 npm 脚本跑 vite，npm 会自动修复可执行位
+      - run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      # 3. 部署
+      - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: dist
