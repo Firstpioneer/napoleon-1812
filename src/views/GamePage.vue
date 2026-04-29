@@ -43,6 +43,12 @@
           <div class="march-day">预计 {{ currentMarchInfo.days }} 天</div>
         </div>
         
+        <div class="panel-section" v-if="marchPreview">
+          <div class="section-title">⚖️ 行动预估</div>
+          <div class="march-day">{{ marchPreview.days }} 天 · 预计损失 {{ formatNumber(marchPreview.loss) }} 人</div>
+          <div class="march-desc">气温 {{ marchPreview.temperature }}°C · {{ marchPreview.risk }}</div>
+        </div>
+
         <div class="panel-section" v-if="totalRestDays > 0">
           <div class="section-title">🏕️ 休整记录</div>
           <div class="rest-info" :class="{ warning: totalRestDays >= 10 }">
@@ -84,23 +90,28 @@
         </div>
         
         <!-- 手机端操作按钮 -->
-        <div class="mobile-actions" v-if="!isAnimating && !currentEvent && !betweenNodeEvent">
+        <div class="mobile-actions" v-if="canAct">
           <button class="btn-mobile-primary" @click="continueMarch">
             {{ phase === 'ADVANCE' ? '继续行军 →' : '← 继续撤退' }}
+            <span v-if="marchPreview" class="mobile-loss-hint">预计 -{{ formatNumber(marchPreview.loss) }}</span>
           </button>
           <button class="btn-mobile-secondary" @click="useSkill('restAndRecover')">🏕️ 休整</button>
+          <button v-if="canInspire" class="btn-mobile-secondary" @click="useSkill('napoleonInspire')">👑 激励 ({{ inspiresLeft }})</button>
         </div>
       </main>
 
       <!-- 右侧操作面板 -->
       <aside class="right-panel" v-if="gamePhase === 'PLAY'">
-        <div class="action-buttons" v-if="!isAnimating && !currentEvent && !betweenNodeEvent">
+        <div class="action-buttons" v-if="canAct">
           <button class="btn-primary" @click="continueMarch">
             {{ phase === 'ADVANCE' ? '继续行军 →' : '← 继续撤退' }}
           </button>
-          <div class="loss-hint">预计本段损失: {{ formatNumber(estimateDailyLoss()) }} 人</div>
+          <div v-if="marchPreview" class="loss-hint">
+            预计本段损失: {{ formatNumber(marchPreview.loss) }} 人 · {{ marchPreview.days }} 天 · {{ marchPreview.temperature }}°C
+          </div>
+          <div v-if="marchPreview" class="risk-hint">{{ marchPreview.risk }}</div>
           <button class="btn-secondary" @click="useSkill('restAndRecover')">🏕️ 扎营休整</button>
-          <button v-if="napoleonHealth > 30 && inspiresLeft > 0" class="btn-secondary" @click="useSkill('napoleonInspire')">
+          <button v-if="canInspire" class="btn-secondary" @click="useSkill('napoleonInspire')">
             👑 皇帝激励 ({{ inspiresLeft }})
           </button>
         </div>
@@ -139,9 +150,9 @@
     <!-- 莫斯科事件 -->
     <transition name="modal">
       <div v-if="showMoscowModal" class="modal-overlay">
-        <div class="modal-card fire">
+        <div class="modal-card fire" role="dialog" aria-modal="true" aria-labelledby="moscow-title">
           <div class="modal-icon">🔥</div>
-          <h2>莫斯科在燃烧</h2>
+          <h2 id="moscow-title">莫斯科在燃烧</h2>
           <div class="moscow-story">
             <p>1812年9月14日，经过三个月的艰苦行军，你终于率军进入莫斯科...</p>
             <p class="highlight">但城市是空的。沙皇亚历山大一世拒绝投降，甚至拒绝谈判。</p>
@@ -166,9 +177,9 @@
     <!-- 节点事件 -->
     <transition name="modal">
       <div v-if="currentEvent" class="modal-overlay">
-        <div class="modal-card event">
+        <div class="modal-card event" role="dialog" aria-modal="true" aria-labelledby="current-event-title">
           <div class="modal-icon">{{ currentEvent.icon }}</div>
-          <h2>{{ currentEvent.title }}</h2>
+          <h2 id="current-event-title">{{ currentEvent.title }}</h2>
           <p class="event-story">{{ currentEvent.story }}</p>
           <p v-if="currentEvent.historicalNote" class="historical-note">📜 {{ currentEvent.historicalNote }}</p>
           <div class="choices">
@@ -188,10 +199,10 @@
     <!-- 随机事件 -->
     <transition name="modal">
       <div v-if="betweenNodeEvent" class="modal-overlay">
-        <div class="modal-card event">
+        <div class="modal-card event" role="dialog" aria-modal="true" aria-labelledby="between-event-title">
           <div class="event-badge">随机事件</div>
           <div class="modal-icon">{{ betweenNodeEvent.icon }}</div>
-          <h2>{{ betweenNodeEvent.title }}</h2>
+          <h2 id="between-event-title">{{ betweenNodeEvent.title }}</h2>
           <p class="event-story">{{ betweenNodeEvent.story }}</p>
           <div class="choices">
             <button class="choice-btn choice-a" @click="pickBetweenNodeChoice('A')">
@@ -210,9 +221,9 @@
     <!-- 哗变 -->
     <transition name="modal">
       <div v-if="showMutinyModal" class="modal-overlay">
-        <div class="modal-card critical">
+        <div class="modal-card critical" role="dialog" aria-modal="true" aria-labelledby="mutiny-title">
           <div class="modal-icon">⚠️</div>
-          <h2>哗变！</h2>
+          <h2 id="mutiny-title">哗变！</h2>
           <p class="dramatic">纪律崩溃！士兵们开始互相抢劫，甚至攻击军官！</p>
           <button class="btn-confirm" @click="resolveMutiny">艰难恢复秩序</button>
         </div>
@@ -222,9 +233,9 @@
     <!-- 皇帝病倒 -->
     <transition name="modal">
       <div v-if="showEmperorSickModal" class="modal-overlay">
-        <div class="modal-card critical">
+        <div class="modal-card critical" role="dialog" aria-modal="true" aria-labelledby="emperor-sick-title">
           <div class="modal-icon">👑</div>
-          <h2>皇帝病倒了！</h2>
+          <h2 id="emperor-sick-title">皇帝病倒了！</h2>
           <p class="dramatic">拿破仑因严寒和疲劳病倒，无法继续指挥。</p>
           <button class="btn-confirm" @click="closeEmperorSickModal">继续撤退</button>
         </div>
@@ -285,30 +296,37 @@ const currentGameDate = ref(new Date(1812, 5, 24))
 const totalRestDays = ref(0) // 累计休整天数
 const MAX_REST_DAYS = 15 // 最大休整天数阈值
 
-// 根据日期计算气温
-const temperature = computed(() => {
-  const month = currentGameDate.value.getMonth()
-  const day = currentGameDate.value.getDate()
-  
-  // 基于历史数据的气温模型
-  if (month === 5) return 22 + Math.floor(Math.random() * 4) // 6月: 22-25°C
-  if (month === 6) return 24 + Math.floor(Math.random() * 5) // 7月: 24-28°C
-  if (month === 7) return 20 + Math.floor(Math.random() * 6) // 8月: 20-25°C
-  if (month === 8) return 12 + Math.floor(Math.random() * 6) // 9月: 12-17°C
-  if (month === 9) { // 10月: 5到-5°C
+function dateVariance(date, range) {
+  const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate()
+  const value = Math.sin(seed * 12.9898) * 43758.5453
+  return Math.floor((value - Math.floor(value)) * range)
+}
+
+function getTemperatureForDate(date) {
+  const month = date.getMonth()
+  const day = date.getDate()
+
+  if (month === 5) return 22 + dateVariance(date, 4)
+  if (month === 6) return 24 + dateVariance(date, 5)
+  if (month === 7) return 20 + dateVariance(date, 6)
+  if (month === 8) return 12 + dateVariance(date, 6)
+  if (month === 9) {
     const progress = day / 31
-    return Math.floor(5 - progress * 10 + Math.random() * 4)
+    return Math.floor(5 - progress * 10 + dateVariance(date, 4))
   }
-  if (month === 10) { // 11月: -5到-25°C
+  if (month === 10) {
     const progress = day / 30
-    return Math.floor(-5 - progress * 20 + Math.random() * 5)
+    return Math.floor(-5 - progress * 20 + dateVariance(date, 5))
   }
-  if (month === 11) { // 12月: -20到-35°C
+  if (month === 11) {
     const progress = day / 31
-    return Math.floor(-20 - progress * 15 + Math.random() * 5)
+    return Math.floor(-20 - progress * 15 + dateVariance(date, 5))
   }
-  return -30 // 1月及以后
-})
+  return -30
+}
+
+// 根据日期计算气温
+const temperature = computed(() => getTemperatureForDate(currentGameDate.value))
 
 // 格式化日期显示
 const currentDate = computed(() => {
@@ -426,6 +444,8 @@ const totalInfected = computed(() => Object.values(armyHealth.infected).reduce((
 const infectionRate = computed(() => troops.value > 0 ? (totalInfected.value / troops.value * 100).toFixed(1) : 0)
 const overallSupply = computed(() => Math.floor(supplies.food * 0.4 + supplies.ammunition * 0.2 + supplies.medicine * 0.2 + supplies.clothing * 0.2))
 const currentMarchInfo = computed(() => currentNodeIdx.value < nodes.length - 1 ? nodeDistances[currentNodeIdx.value] || null : null)
+const canAct = computed(() => !isAnimating.value && !currentEvent.value && !betweenNodeEvent.value)
+const canInspire = computed(() => napoleonHealth.value > 30 && inspiresLeft.value > 0)
 const hasWarnings = computed(() => discipline.value < 30 || temperature.value < -25 || troops.value < 50000)
 
 // ==================== 地图节点 ====================
@@ -484,11 +504,30 @@ function addLog(text, type = 'normal') {
 // ==================== 伤害显示 ====================
 const damages = ref([])
 let dmgId = 0
+const timeoutIds = new Set()
+
+function scheduleTimeout(callback, delay) {
+  const id = setTimeout(() => {
+    timeoutIds.delete(id)
+    callback()
+  }, delay)
+  timeoutIds.add(id)
+  return id
+}
+
+function clearScheduledTimeouts() {
+  timeoutIds.forEach(id => clearTimeout(id))
+  timeoutIds.clear()
+}
+
 function showDamage(text, type = 'loss') {
-  damages.value.push({ id: dmgId++, text, type, x: 400 + Math.random() * 100, y: 150 + Math.random() * 50 })
-  setTimeout(() => damages.value.shift(), 1500)
+  const id = dmgId++
+  damages.value.push({ id, text, type, x: 400 + Math.random() * 100, y: 150 + Math.random() * 50 })
+  scheduleTimeout(() => {
+    damages.value = damages.value.filter(d => d.id !== id)
+  }, 1500)
   isShaking.value = true
-  setTimeout(() => isShaking.value = false, 300)
+  scheduleTimeout(() => isShaking.value = false, 300)
 }
 
 // ==================== Toast ====================
@@ -497,7 +536,7 @@ const toastType = ref('')
 function showToast(msg, type = '') {
   toastMsg.value = msg
   toastType.value = type
-  setTimeout(() => toastMsg.value = '', 2000)
+  scheduleTimeout(() => toastMsg.value = '', 2000)
 }
 
 // ==================== 工具函数 ====================
@@ -512,18 +551,37 @@ function estimateDailyLoss() {
   const currentTemp = temperature.value
   const marchInfo = nodeDistances[currentNodeIdx.value]
   if (!marchInfo) return 0
-  
-  const result = calculateDailyLoss({ 
-    phase: phase.value, 
-    troops: troops.value, 
-    temperature: currentTemp, 
-    discipline: discipline.value, 
-    napoleonHealth: napoleonHealth.value, 
-    supplies, 
-    armyHealth 
+
+  const result = calculateDailyLoss({
+    phase: phase.value,
+    troops: troops.value,
+    temperature: currentTemp,
+    discipline: discipline.value,
+    napoleonHealth: napoleonHealth.value,
+    supplies,
+    armyHealth
   })
   return result.total
 }
+
+const marchPreview = computed(() => {
+  const marchInfo = nodeDistances[currentNodeIdx.value]
+  if (!marchInfo) return null
+
+  const loss = estimateDailyLoss()
+  const risks = []
+  if (temperature.value < -20) risks.push('极寒会显著增加伤亡')
+  else if (temperature.value < 0) risks.push('低温将消耗衣物与士气')
+  if (overallSupply.value < 35) risks.push('补给不足')
+  if (discipline.value < 45) risks.push('纪律风险偏高')
+
+  return {
+    days: marchInfo.days,
+    loss,
+    temperature: temperature.value,
+    risk: risks.length ? risks.join('，') : '风险可控'
+  }
+})
 
 // ==================== 每日结算 ====================
 function processDailyMarch() {
@@ -1049,6 +1107,7 @@ const endQuote = computed(() => {
 function restart() {
   if (advanceTimer) clearInterval(advanceTimer)
   if (retreatTimer) clearInterval(retreatTimer)
+  clearScheduledTimeouts()
   advanceTimer = null; retreatTimer = null
   troops.value = 422000; discipline.value = 100; napoleonHealth.value = 100
   currentGameDate.value = new Date(1812, 5, 24) // 重置为6月24日
@@ -1091,7 +1150,11 @@ function restart() {
 
 function goHome() { router.push('/') }
 
-onUnmounted(() => { if (advanceTimer) clearInterval(advanceTimer); if (retreatTimer) clearInterval(retreatTimer) })
+onUnmounted(() => {
+  if (advanceTimer) clearInterval(advanceTimer)
+  if (retreatTimer) clearInterval(retreatTimer)
+  clearScheduledTimeouts()
+})
 </script>
 
 <style scoped>
@@ -1233,7 +1296,9 @@ onUnmounted(() => { if (advanceTimer) clearInterval(advanceTimer); if (retreatTi
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212, 163, 115, 0.4); }
 .btn-secondary { padding: 10px 16px; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); font-size: 0.85rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
 .btn-secondary:hover { border-color: #D4A373; color: #D4A373; }
-.loss-hint { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-align: center; }
+.loss-hint { font-size: 0.75rem; color: rgba(255,255,255,0.55); text-align: center; line-height: 1.5; }
+.risk-hint { font-size: 0.72rem; color: #E67E22; text-align: center; line-height: 1.4; }
+.mobile-loss-hint { display: block; font-size: 0.7rem; font-weight: normal; opacity: 0.75; margin-top: 2px; }
 .marching-hint { text-align: center; color: #D4A373; font-style: italic; }
 
 /* 伤害数字 */

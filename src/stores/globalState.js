@@ -11,6 +11,12 @@ export const timeRange = {
   end: new Date('1812-12-14')
 }
 
+const timeRangeStartMs = timeRange.start.getTime()
+const timeRangeEndMs = timeRange.end.getTime()
+const timeRangeTotalMs = timeRangeEndMs - timeRangeStartMs
+const minPlaybackFrameMs = 80
+const playbackDayMs = 24 * 60 * 60 * 1000
+
 // 当前阶段
 export const currentPhase = computed(() => {
   const time = currentTime.value
@@ -91,9 +97,8 @@ export const currentDateFormatted = computed(() => {
 
 // 进度百分比 (0-100)
 export const timeProgress = computed(() => {
-  const total = timeRange.end - timeRange.start
-  const current = currentTime.value - timeRange.start
-  return Math.max(0, Math.min(100, (current / total) * 100))
+  const current = currentTime.value.getTime() - timeRangeStartMs
+  return Math.max(0, Math.min(100, (current / timeRangeTotalMs) * 100))
 })
 
 // 设置时间的方法
@@ -107,8 +112,8 @@ export function setTime(date) {
 
 // 根据进度设置时间
 export function setTimeByProgress(progress) {
-  const total = timeRange.end - timeRange.start
-  const newTime = new Date(timeRange.start.getTime() + total * (progress / 100))
+  const clampedProgress = Math.max(0, Math.min(100, progress))
+  const newTime = new Date(timeRangeStartMs + timeRangeTotalMs * (clampedProgress / 100))
   currentTime.value = newTime
 }
 
@@ -117,28 +122,39 @@ export const isPlaying = ref(false)
 export const playbackSpeed = ref(1) // 倍速
 
 let animationFrame = null
+let lastPlaybackTime = 0
+let pendingPlaybackMs = 0
 
 export function startPlayback() {
   if (isPlaying.value) return
   isPlaying.value = true
-  
-  const animate = () => {
+  lastPlaybackTime = performance.now()
+  pendingPlaybackMs = 0
+
+  const animate = (timestamp) => {
     if (!isPlaying.value) return
-    
-    // 每帧增加约半天
-    const increment = 12 * 60 * 60 * 1000 * playbackSpeed.value
-    const newTime = new Date(currentTime.value.getTime() + increment)
-    
-    if (newTime >= timeRange.end) {
-      currentTime.value = timeRange.end
-      stopPlayback()
-      return
+
+    const elapsed = timestamp - lastPlaybackTime
+    lastPlaybackTime = timestamp
+    pendingPlaybackMs += elapsed
+
+    if (pendingPlaybackMs >= minPlaybackFrameMs) {
+      const increment = pendingPlaybackMs * playbackSpeed.value * playbackDayMs / 120
+      pendingPlaybackMs = 0
+      const newTimeMs = currentTime.value.getTime() + increment
+
+      if (newTimeMs >= timeRangeEndMs) {
+        currentTime.value = timeRange.end
+        stopPlayback()
+        return
+      }
+
+      currentTime.value = new Date(newTimeMs)
     }
-    
-    currentTime.value = newTime
+
     animationFrame = requestAnimationFrame(animate)
   }
-  
+
   animationFrame = requestAnimationFrame(animate)
 }
 

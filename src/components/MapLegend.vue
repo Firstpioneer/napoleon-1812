@@ -1,9 +1,14 @@
 <template>
   <div class="map-legend" :class="{ collapsed: isCollapsed }">
-    <div class="legend-header" @click="isCollapsed = !isCollapsed">
+    <button
+      class="legend-header"
+      type="button"
+      :aria-expanded="!isCollapsed"
+      @click="isCollapsed = !isCollapsed"
+    >
       <h4 class="legend-title">图例 / Legend</h4>
-      <span class="collapse-btn">{{ isCollapsed ? '›' : '‹' }}</span>
-    </div>
+      <span class="collapse-btn" aria-hidden="true">{{ isCollapsed ? '›' : '‹' }}</span>
+    </button>
     
     <div class="legend-content" v-show="!isCollapsed">
       <label class="legend-item clickable">
@@ -83,6 +88,16 @@ const isCollapsed = ref(false)
   justify-content: space-between;
   cursor: pointer;
   gap: 10px;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+}
+
+.legend-header:focus-visible {
+  outline: 2px solid #C9A86C;
+  outline-offset: 4px;
 }
 
 .collapse-btn {

@@ -2,20 +2,22 @@
   <div class="timeline-controller">
     <!-- 阶段控制面板 -->
     <div class="phase-controller">
-      <div 
-        v-for="phase in phases" 
+      <button
+        v-for="phase in phases"
         :key="phase.id"
         class="phase-segment"
-        :class="{ 
+        :class="{
           active: currentPhaseId === phase.id,
           completed: isPhaseCompleted(phase)
         }"
         :style="{ width: phase.width + '%' }"
+        type="button"
+        :aria-current="currentPhaseId === phase.id ? 'step' : undefined"
         @click="jumpToPhase(phase)"
       >
         <div class="phase-fill" :style="{ width: getPhaseProgress(phase) + '%' }"></div>
         <span class="phase-label">{{ phase.label }}</span>
-      </div>
+      </button>
     </div>
 
     <!-- 时间轴滑块 -->
@@ -25,14 +27,19 @@
         <div class="temp-gradient" :style="tempGradientStyle"></div>
         
         <!-- 事件标记 -->
-        <div 
-          v-for="event in timelineEvents" 
+        <div
+          v-for="event in timelineEvents"
           :key="event.id"
           class="event-marker-small"
           :class="event.type"
           :style="{ left: event.position + '%' }"
           :title="event.name"
+          role="button"
+          tabindex="0"
+          :aria-label="`查看事件：${event.name}`"
           @click.stop="$emit('event-click', event)"
+          @keydown.enter.stop.prevent="$emit('event-click', event)"
+          @keydown.space.stop.prevent="$emit('event-click', event)"
         >
           <span class="event-dot"></span>
         </div>
@@ -41,11 +48,18 @@
         <div class="progress-bar" :style="{ width: progress + '%' }"></div>
         
         <!-- 拖动手柄 -->
-        <div 
+        <div
           class="slider-handle"
           :style="{ left: progress + '%' }"
+          role="slider"
+          tabindex="0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          :aria-valuenow="Math.round(progress)"
+          :aria-valuetext="`${formattedDate}，兵力${formattedTroops}，气温${currentTemp}°C`"
           @mousedown="startDrag"
           @touchstart="startDrag"
+          @keydown="handleSliderKeydown"
         >
           <div class="handle-tooltip">
             <span class="tooltip-date">{{ formattedDate }}</span>
@@ -70,10 +84,10 @@
 
     <!-- 播放控制 -->
     <div class="playback-controls">
-      <button class="control-btn" @click="resetTime" title="重置">
+      <button class="control-btn" @click="resetTime" title="重置" aria-label="重置时间轴">
         <span>⏮</span>
       </button>
-      <button class="control-btn play-btn" @click="togglePlayback" :title="isPlaying ? '暂停' : '播放'">
+      <button class="control-btn play-btn" @click="togglePlayback" :title="isPlaying ? '暂停' : '播放'" :aria-label="isPlaying ? '暂停播放' : '开始播放'">
         <span>{{ isPlaying ? '⏸' : '▶' }}</span>
       </button>
       <div class="speed-control">
@@ -220,21 +234,44 @@ function updateSpeed() {
 }
 
 // 拖动逻辑
+let dragFrame = null
+let pendingDragProgress = null
+
+function commitDragProgress() {
+  if (pendingDragProgress !== null) {
+    setTimeByProgress(pendingDragProgress)
+    pendingDragProgress = null
+  }
+  dragFrame = null
+}
+
+function queueDragProgress(progress) {
+  pendingDragProgress = progress
+  if (!dragFrame) {
+    dragFrame = requestAnimationFrame(commitDragProgress)
+  }
+}
+
 function startDrag(e) {
   e.preventDefault()
+  if (!trackRef.value) return
+
   isDragging.value = true
   stopPlayback()
-  
-  const handleMove = (moveEvent) => {
-    if (!isDragging.value || !trackRef.value) return
-    
-    const rect = trackRef.value.getBoundingClientRect()
-    const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX
+  const rect = trackRef.value.getBoundingClientRect()
+
+  const updateFromClientX = (clientX) => {
     const x = clientX - rect.left
-    const progress = Math.max(0, Math.min(100, (x / rect.width) * 100))
-    setTimeByProgress(progress)
+    const nextProgress = Math.max(0, Math.min(100, (x / rect.width) * 100))
+    queueDragProgress(nextProgress)
   }
-  
+
+  const handleMove = (moveEvent) => {
+    if (!isDragging.value) return
+    const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX
+    updateFromClientX(clientX)
+  }
+
   const handleEnd = () => {
     isDragging.value = false
     document.removeEventListener('mousemove', handleMove)
@@ -242,12 +279,30 @@ function startDrag(e) {
     document.removeEventListener('touchmove', handleMove)
     document.removeEventListener('touchend', handleEnd)
   }
-  
+
+  const initialClientX = e.touches ? e.touches[0].clientX : e.clientX
+  updateFromClientX(initialClientX)
   document.addEventListener('mousemove', handleMove)
   document.addEventListener('mouseup', handleEnd)
-  document.addEventListener('touchmove', handleMove)
+  document.addEventListener('touchmove', handleMove, { passive: false })
   document.addEventListener('touchend', handleEnd)
 }
+
+function handleSliderKeydown(e) {
+  const step = e.shiftKey ? 5 : 1
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+    e.preventDefault()
+    setTimeByProgress(progress.value - step)
+  }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+    e.preventDefault()
+    setTimeByProgress(progress.value + step)
+  }
+}
+
+onUnmounted(() => {
+  if (dragFrame) cancelAnimationFrame(dragFrame)
+})
 
 // 点击轨道跳转
 function handleTrackClick(e) {
@@ -285,6 +340,9 @@ function handleTrackClick(e) {
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
+  border: 0;
+  padding: 0;
+  font: inherit;
 }
 
 .phase-segment:not(:last-child) {
@@ -377,6 +435,13 @@ function handleTrackClick(e) {
 .slider-handle:active {
   cursor: grabbing;
   transform: translate(-50%, -50%) scale(1.1);
+}
+
+.phase-segment:focus-visible,
+.event-marker-small:focus-visible,
+.slider-handle:focus-visible {
+  outline: 2px solid #D4A373;
+  outline-offset: 3px;
 }
 
 .handle-tooltip {

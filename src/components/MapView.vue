@@ -1,6 +1,15 @@
 <template>
-  <div class="map-section">
+  <div class="map-section" :class="{ 'map-playing': isPlaying }">
     <div id="map" ref="mapContainer"></div>
+    <button
+      class="follow-route-toggle"
+      type="button"
+      :class="{ active: followRoute }"
+      :aria-pressed="followRoute"
+      @click="followRoute = !followRoute"
+    >
+      跟随路线：{{ followRoute ? '开' : '关' }}
+    </button>
     <!-- 冰霜覆盖滤镜 - P1: 环境视觉同步 -->
     <div 
       class="frost-overlay" 
@@ -24,10 +33,10 @@ import {
 } from '../stores/campaignData.js'
 import { keyBattles } from '../stores/battlesData.js'
 import { 
-  currentTime, 
-  currentPhase, 
-  currentTemp, 
-  timeProgress 
+  currentTime,
+  currentPhase,
+  currentTemp,
+  isPlaying
 } from '../stores/globalState.js'
 
 const router = useRouter()
@@ -42,7 +51,14 @@ const props = defineProps({
 const emit = defineEmits(['event-click'])
 
 const mapContainer = ref(null)
+const followRoute = ref(true)
 let map = null
+let lastPanAt = 0
+const panThrottleMs = 700
+const routeCache = {
+  advance: napoleonAdvance.map(point => ({ ...point, timeMs: new Date(point.date).getTime() })),
+  retreat: napoleonRetreat.map(point => ({ ...point, timeMs: new Date(point.date).getTime() }))
+}
 let layers = {
   advance: [],
   retreat: [],
@@ -156,39 +172,34 @@ function createProgressMarker() {
 // P0: 根据时间更新进度标记位置
 function updateProgressMarker() {
   if (!layers.progressMarker) return
-  
-  const time = currentTime.value
+
+  const timeMs = currentTime.value.getTime()
   const phase = currentPhase.value
-  const data = phase === 'retreat' ? napoleonRetreat : napoleonAdvance
-  
-  // 找到当前时间对应的位置（插值）
+  const data = phase === 'retreat' ? routeCache.retreat : routeCache.advance
+
   let prev = data[0]
   let next = data[1] || data[0]
-  
+
   for (let i = 0; i < data.length - 1; i++) {
-    const currDate = new Date(data[i].date)
-    const nextDate = new Date(data[i + 1].date)
-    
-    if (time >= currDate && time <= nextDate) {
+    if (timeMs >= data[i].timeMs && timeMs <= data[i + 1].timeMs) {
       prev = data[i]
       next = data[i + 1]
       break
-    } else if (time > nextDate) {
+    }
+
+    if (timeMs > data[i + 1].timeMs) {
       prev = data[i + 1]
       next = data[i + 2] || data[i + 1]
     }
   }
-  
-  // 线性插值计算位置
-  const prevDate = new Date(prev.date)
-  const nextDate = new Date(next.date)
-  const progress = nextDate > prevDate 
-    ? (time - prevDate) / (nextDate - prevDate) 
+
+  const progress = next.timeMs > prev.timeMs
+    ? (timeMs - prev.timeMs) / (next.timeMs - prev.timeMs)
     : 0
-  
-  const lat = prev.lat + (next.lat - prev.lat) * Math.min(1, Math.max(0, progress))
-  const lon = prev.lon + (next.lon - prev.lon) * Math.min(1, Math.max(0, progress))
-  
+  const clampedProgress = Math.min(1, Math.max(0, progress))
+  const lat = prev.lat + (next.lat - prev.lat) * clampedProgress
+  const lon = prev.lon + (next.lon - prev.lon) * clampedProgress
+
   layers.progressMarker.setLatLng([lat, lon])
 }
 
@@ -384,15 +395,19 @@ watch(() => props.showSchwarzenberg, (show) => {
 // P0: 监听全局时间变化，更新进度标记和地图视角
 watch(currentTime, () => {
   updateProgressMarker()
-  // 当播放时，地图视角跟随当前位置
-  if (map && layers.progressMarker) {
-    const latlng = layers.progressMarker.getLatLng()
-    const currentCenter = map.getCenter()
-    const distance = currentCenter.distanceTo(latlng)
-    // 如果距离较大，平滑移动视角
-    if (distance > 50000) { // 50km
-      map.panTo(latlng, { duration: 0.5, animate: true })
-    }
+
+  if (!map || !layers.progressMarker || !followRoute.value) return
+
+  const now = performance.now()
+  if (now - lastPanAt < panThrottleMs) return
+
+  const latlng = layers.progressMarker.getLatLng()
+  const currentCenter = map.getCenter()
+  const distance = currentCenter.distanceTo(latlng)
+
+  if (distance > 50000) {
+    lastPanAt = now
+    map.panTo(latlng, { duration: 0.5, animate: true })
   }
 }, { immediate: true })
 
@@ -414,6 +429,32 @@ defineExpose({ flyTo, updateProgressMarker })
   width: 100%;
   height: 100%;
   background: #1a1a1a;
+}
+
+.follow-route-toggle {
+  position: absolute;
+  top: 80px;
+  right: 18px;
+  z-index: 500;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.78);
+  border: 1px solid rgba(212, 163, 115, 0.45);
+  border-radius: 999px;
+  color: #F5F0E6;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.78rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.follow-route-toggle.active {
+  color: #D4A373;
+  box-shadow: 0 0 10px rgba(212, 163, 115, 0.25);
+}
+
+.follow-route-toggle:focus-visible {
+  outline: 2px solid #D4A373;
+  outline-offset: 2px;
 }
 
 /* P1: 冰霜覆盖滤镜 */
@@ -470,6 +511,11 @@ defineExpose({ flyTo, updateProgressMarker })
   background: rgba(212, 163, 115, 0.4);
   border-radius: 50%;
   animation: pulse 2s infinite;
+  animation-play-state: paused;
+}
+
+.map-playing :deep(.marker-pulse) {
+  animation-play-state: running;
 }
 
 @keyframes pulse {
@@ -491,6 +537,11 @@ defineExpose({ flyTo, updateProgressMarker })
 
 :deep(.flow-animation) {
   animation: flowPath 3s linear infinite;
+  animation-play-state: paused;
+}
+
+.map-playing :deep(.flow-animation) {
+  animation-play-state: running;
 }
 
 @keyframes flowPath {
@@ -548,5 +599,16 @@ defineExpose({ flyTo, updateProgressMarker })
   background: rgba(0,0,0,0.8) !important;
   color: #F5F0E6 !important;
   border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :deep(.marker-pulse),
+  :deep(.flow-animation) {
+    animation: none;
+  }
+
+  .frost-overlay {
+    transition: none;
+  }
 }
 </style>
